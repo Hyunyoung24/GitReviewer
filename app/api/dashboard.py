@@ -34,6 +34,7 @@ def get_dashboard(db: Session = Depends(get_db)):
             "status": review.status,
             # datetime을 JSON으로 직렬화할 수 있게 문자열로 변환
             "created_at": review.created_at.isoformat() if review.created_at else None,
+            "summary": review.summary, 
         })
     
     return {"reviews": result}

@@ -2,22 +2,40 @@ fetch('/dashboard')
     .then(res => res.json())
     .then(data => {
         const reviews = data.reviews;
+        const modal = document.getElementById('modal');
 
         /* 테이블에 리뷰 이력 채우기 */
         const tbody = document.getElementById('reviewTable');
         reviews.forEach(r => {
+            const tr = document.createElement('tr');
             const date = new Date(r.created_at).toLocaleString('ko-KR');
-            tbody.innerHTML += `
-                <tr>
-                    <td>${r.id}</td>
-                    <td>${r.repo}</td>
-                    <td>#${r.pr_number}</td>
-                    <td>${r.title}</td>
-                    <td class="status-completed">${r.status}</td>
-                    <td>${date}</td>
-                </tr>
+            tr.innerHTML = `
+                <td>${r.id}</td>
+                <td>
+                    <a href="https://github.com/${r.repo}" target="_blank">
+                        ${r.repo}
+                    </a>
+                </td>
+                <td>#${r.pr_number}</td>
+                <td>
+                    <a href="https://github.com/${r.repo}/pull/${r.pr_number}" target="_blank">
+                        ${r.title}
+                    </a>
+                </td>
+                <td class="status-completed">${r.status}</td>
+                <td>${date}</td>
             `;
+
+            tr.addEventListener('click', () => {
+                document.getElementById('modal-body').innerHTML = marked.parse(r.summary);
+                modal.style.display = 'block';
+            });
+            tbody.appendChild(tr);
         });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        })
 
         /* Chart.js로 저장소별 리뷰 횟수 집계 */
         const repoCounts = {};
@@ -42,3 +60,5 @@ fetch('/dashboard')
             }
         });
     });
+
+setInterval(() => location.reload(), 30000);
