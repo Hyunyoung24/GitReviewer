@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitReviewer 대시보드</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <h1>GitReviewer 대시보드</h1>
+        <!-- 리뷰 통계 차트 -->
+        <div class="card">
+            <h2>리뷰 현황</h2>
+            <canvas id="reviewChart" height="100"></canvas>
+        </div>
+        <!-- 리뷰 이력 테이블 -->
+        <div class="card">
+            <h2>최근 리뷰 이력</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>저장소</th>
+                        <th>PR</th>
+                        <th>제목</th>
+                        <th>상태</th>
+                        <th>날짜</th>
+                    </tr>
+                </thead>
+                <tbody id="reviewTable"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="/static/dashboard.js"></script>
+</body>
+</html>

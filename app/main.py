@@ -6,12 +6,19 @@ from dotenv import load_dotenv
 from app.core.reviewer import review_pr
 from redis import Redis
 from rq import Queue
+from app.api.dashboard import router as dashboard_router
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 
 load_dotenv()
 
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
 
 app = FastAPI()
+app.include_router(dashboard_router)
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+templates = Jinja2Templates(directory="app/templates")
 redis_conn = Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
 q = Queue(connection=redis_conn)
 
