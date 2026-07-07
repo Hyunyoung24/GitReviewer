@@ -2,15 +2,18 @@ from fastapi import FastAPI, Request, HTTPException
 import hmac
 import hashlib
 import os
-import asyncio
 from dotenv import load_dotenv
 from app.core.reviewer import review_pr
+from redis import Redis
+from rq import Queue
 
 load_dotenv()
 
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
 
 app = FastAPI()
+redis_conn = Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
+q = Queue(connection=redis_conn)
 
 def verify_signature(payload: bytes, signature: str) -> bool:
     if not WEBHOOK_SECRET:
@@ -21,15 +24,6 @@ def verify_signature(payload: bytes, signature: str) -> bool:
         hashlib.sha256
     ).hexdigest()
     return hmac.compare_digest(expected, signature)
-
-async def run_review(repo_name: str, pr_number: int):
-    try:
-        await asyncio.get_event_loop().run_in_executor(
-            None, review_pr, repo_name, pr_number
-        )
-    except Exception as e:
-        print(f"오류: {e}")
-        
 
 @app.post("/webhook")
 async def github_webhook(request: Request):
@@ -51,7 +45,7 @@ async def github_webhook(request: Request):
             repo_name = data["repository"]["full_name"]
             print(f"PR #{pr_number} 감지됨: {repo_name}")
             # 백그라운드로 리뷰 실행
-            asyncio.create_task(run_review(repo_name, pr_number))
+            q.enqueue(review_pr, repo_name, pr_number)
     
     return {"status": "ok"}
 
