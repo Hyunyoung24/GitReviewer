@@ -1,4 +1,5 @@
 import os
+import datetime
 from dotenv import load_dotenv
 from github import Github, Auth
 import anthropic
@@ -34,10 +35,11 @@ message = client.messages.create(
     messages=[
         {
             "role": "user",
-            "content": f"""아래 코드 변경사항을 리뷰해주세요.
-한 가지 개선점이나 주의사항을 짧게 한국어로 작성해주세요.
+            "content": f"""오늘 날짜는 {datetime.date.today()}입니다. 
+                        아래 코드 변경사항을 리뷰해주세요.
+                        한 가지 개선점이나 주의사항을 짧게 한국어로 작성해주세요.
 
-{diff_text}"""
+                        {diff_text}"""
         }
     ]
 )
