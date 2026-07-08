@@ -16,13 +16,13 @@ fetch('/dashboard')
                         ${r.repo}
                     </a>
                 </td>
-                <td>#${r.pr_number}</td>
+                <td><span class="pr-badge">#${r.pr_number}</span></td>
                 <td>
                     <a href="https://github.com/${r.repo}/pull/${r.pr_number}" target="_blank">
                         ${r.title}
                     </a>
                 </td>
-                <td class="status-completed">${r.status}</td>
+                <td><span class="status-completed">${r.status === 'completed' ? '완료' : r.status}</span></td>
                 <td>${date}</td>
             `;
 
