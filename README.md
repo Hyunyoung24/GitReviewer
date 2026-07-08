@@ -84,6 +84,13 @@ python worker.py
 ngrok http 8000
 ```
 
+> **참고**: Windows 환경에서는 Redis 실행을 위해 WSL(Windows Subsystem for Linux)이 필요합니다.
+> ```bash
+> wsl --install -d Ubuntu
+> sudo apt-get install redis-server
+> sudo service redis-server start
+> ```
+
 ## 추후 계획
 - **카테고리 분류**: 버그/스타일/성능/보안으로 리뷰 코멘트를 자동 분류하고 대시보드에 통계 표시
 - **Docker화**: docker-compose로 FastAPI + Redis + Worker를 한 번에 구동
