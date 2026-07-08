@@ -8,7 +8,7 @@ fetch('/dashboard')
         const tbody = document.getElementById('reviewTable');
         reviews.forEach(r => {
             const tr = document.createElement('tr');
-            const date = new Date(r.created_at).toLocaleString('ko-KR');
+            const date = new Date(r.created_at + 'Z').toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
             tr.innerHTML = `
                 <td>${r.id}</td>
                 <td>
