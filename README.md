@@ -8,7 +8,7 @@ GitHub PR이 열리면 Claude AI가 자동으로 코드를 리뷰하고 라인 �
 4. RQ 워커가 큐에서 작업을 꺼내 PR의 diff를 추출하고 (`worker.py` > `app/core/reviewer.py`)
 5. Claude API로 코드 리뷰를 요청
 6. 결과를 GitHub PR 라인 코멘트 + 요약 댓글로 등록하고 DB에 저장 (`app/core/reviewer.py`)
-7. 웹 대시보드(http://127.0.0.1:8000/dashboard_page)에서 리뷰 이력 확인 (`app/api/dashboard.py`)
+7. 웹 대시보드에서 리뷰 이력 확인 (`app/api/dashboard.py`)
 
 ## 기술 스택
 
@@ -52,6 +52,7 @@ ngrok config add-authtoken your_token
 sudo apt-get install redis-server
 sudo service redis-server start
 ```
+
 ### GitHub 웹훅 등록
 1. 리뷰받을 GitHub 저장소 → Settings → Webhooks → Add webhook
 2. Payload URL: `https://ngrok주소/webhook`
@@ -66,9 +67,9 @@ sudo service redis-server start
 pip install -r requirements.txt
 
 # 2. 환경변수 설정 (.env)
-ANTHROPIC_API_KEY=your_key
-GITHUB_TOKEN=your_token
-WEBHOOK_SECRET=your_secret
+ANTHROPIC_API_KEY=클로드 API 키
+GITHUB_TOKEN=해당 리포지토리 접근 가능한 토큰
+WEBHOOK_SECRET=웹훅 Secret 값
 REDIS_URL=redis://localhost:6379
 
 # 3. DB 초기화
@@ -82,6 +83,9 @@ python worker.py
 
 # 6. ngrok으로 외부 노출
 ngrok http 8000
+
+# 7. 대시보드 실행
+http://127.0.0.1:8000/dashboard_page
 ```
 
 > **참고**: Windows 환경에서는 Redis 실행을 위해 WSL(Windows Subsystem for Linux)이 필요합니다.
