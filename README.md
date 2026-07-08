@@ -52,6 +52,14 @@ ngrok config add-authtoken your_token
 sudo apt-get install redis-server
 sudo service redis-server start
 ```
+### GitHub 웹훅 등록
+1. 리뷰받을 GitHub 저장소 → Settings → Webhooks → Add webhook
+2. Payload URL: `https://ngrok주소/webhook`
+3. Content type: `application/json`
+4. Secret: `.env`의 `WEBHOOK_SECRET` 값
+5. Events: **Pull requests** 선택
+6. Add webhook 클릭
+
 ### 실행
 ```bash
 # 1. 패키지 설치
