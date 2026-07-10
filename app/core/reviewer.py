@@ -83,7 +83,9 @@ def review_pr(repo_name: str, pr_number: int):
         {{
             "path": "파일 경로",
             "line": 변경된 줄 번호 (숫자),
-            "body": "해당 줄에 대한 코멘트 (한국어)"
+            "body": "해당 줄에 대한 코멘트 (한국어)",
+            "category": "bug | style | performance | security 중 하나",
+            "severity": "info | caution | warning 중 하나"
         }}
     ]
 }}
@@ -140,8 +142,8 @@ diff에서 + 로 시작하는 줄만 line으로 지정하세요.
                     file_path = c["path"], 
                     line_number = c["line"], 
                     body = c["body"], 
-                    category = "general", 
-                    severity = "info"
+                    category = c.get("category", "general"), 
+                    severity = c.get("severity", "info")
                 )
                 db.add(db_comment)
                 print(f"라인 코멘트 작성 완료: {c['path']} {c['line']}번째 줄")
