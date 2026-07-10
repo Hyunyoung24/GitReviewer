@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Repository, Review
+from app.models import Repository, Review, ReviewComment
 from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -36,5 +37,13 @@ def get_dashboard(db: Session = Depends(get_db)):
             "created_at": review.created_at.isoformat() if review.created_at else None,
             "summary": review.summary, 
         })
-    
-    return {"reviews": result}
+
+    category_counts = (
+        db.query(ReviewComment.category, func.count(ReviewComment.id))
+        .group_by(ReviewComment.category)
+        .all()
+    )
+
+    categories = { cat: count for cat, count in category_counts }
+
+    return {"reviews": result, "categories": categories}

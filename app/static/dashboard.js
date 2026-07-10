@@ -59,6 +59,31 @@ fetch('/dashboard')
                 scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
             }
         });
+
+        /* 카테고리별 코멘트 차트 */
+        const categories = data.categories;
+
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(categories),
+                datasets: [{
+                    data: Object.values(categories),
+                    backgroundColor: [
+                        '#cf222e',  /* bug - 빨강 */
+                        '#0969da',  /* general - 파랑 */
+                        '#8250df',  /* performance - 보라 */
+                        '#1a7f37',  /* style - 초록 */
+                        '#bf8700',  /* security - 노랑 */
+                    ],
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
     });
 
 setInterval(() => location.reload(), 30000);

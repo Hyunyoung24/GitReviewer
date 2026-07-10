@@ -65,6 +65,27 @@ tbody tr {
 
 tbody tr:hover { background: #f0f7ff; }
 
+.chart-row {
+    display: flex;
+    gap: 24px;
+}
+
+.chart-row .card:first-child {
+    flex: 4;
+    min-width: 0;
+}
+
+.chart-row .card:last-child {
+    flex: 2;
+    min-width: 0;
+}
+
+#reviewChart { max-height: 400px; }
+
+#categoryChart {
+    max-height: 150px;
+}
+
 .pr-badge {
     display: inline-block;
     padding: 2px 8px;

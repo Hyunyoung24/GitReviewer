@@ -10,12 +10,19 @@
 <body>
     <div class="container">
         <h1>GitReviewer 대시보드</h1>
-        <!-- 리뷰 통계 차트 -->
-        <div class="card">
-            <h2>리뷰 현황</h2>
-            <canvas id="reviewChart" height="100"></canvas>
-        </div>
+        <div class="chart-row">
+            <!-- 리뷰 통계 차트 -->
+            <div class="card">
+                <h2>리뷰 현황</h2>
+                <canvas id="reviewChart" height="100"></canvas>
+            </div>
+            <!-- 카테고리 통계 차트 -->
+            <div class="card">
+                <h2>카테고리별 코멘트</h2>
+                <canvas id="categoryChart" height="100"></canvas>
+            </div>
         <!-- 리뷰 이력 테이블 -->
+        </div>
         <div class="card">
             <h2>최근 리뷰 이력</h2>
             <table>
