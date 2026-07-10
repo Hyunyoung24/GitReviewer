@@ -1,0 +1,14 @@
+{
+  "name": "GitReviewer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Hyunyoung24/GitReviewer.git",
+  "author": "kopo1007 <2625341007@gspace.kopo.ac.kr>",
+  "license": "MIT",
+  "scripts": {
+    "start": "json-server --watch db.json"
+  }, 
+  "dependencies": {
+    "json-server": "0.17.4"
+  }
+}

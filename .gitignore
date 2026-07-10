@@ -222,3 +222,8 @@ __marimo__/
 *.db
 .bkit/
 .omc/
+
+# json-server
+node_modules/
+db.json
+yarn.lock
