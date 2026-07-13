@@ -1,9 +1,12 @@
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "sqlite:///./gitreviewer.db"
+load_dotenv(override=False)  # Railway 환경변수 우선
+
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./gitreviewer.db")
 
 # PostgreSQL은 connect_args 불필요하니 false로
 if DATABASE_URL.startswith("sqlite"):
