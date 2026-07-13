@@ -6,6 +6,16 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-07-10
+### Added
+- 카테고리(bug/style/performance/security)·심각도(info/caution/warning) 분류
+- 카테고리별 코멘트 도넛 차트 대시보드 추가
+- Docker + docker-compose 컨테이너화 (FastAPI + Redis + Worker)
+
+### Changed
+- 대시보드 UI 개선 (차트 레이아웃, PR 배지, 상태 배지 한국어화)
+- README Docker 실행 가이드 및 .env 설명 보완
+
 ## [0.4.0] - 2026-07-08
 ### Added
 - 라인 코멘트 DB 저장 (ReviewComment 테이블)

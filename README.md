@@ -62,6 +62,22 @@ sudo service redis-server start
 6. Add webhook 클릭
 
 ### 실행
+#### Docker (권장)
+```bash
+# 1. 환경변수 설정 (.env)
+ANTHROPIC_API_KEY=클로드 API 키
+GITHUB_TOKEN=해당 리포지토리 접근 가능한 토큰
+WEBHOOK_SECRET=웹훅 Secret 값
+REDIS_URL=redis://redis:6379
+
+# 2. DB 초기화
+python -m app.init_db
+
+# 3. 실행 (FastAPI + Redis + Worker)
+docker-compose up --build
+```
+
+#### 로컬에서 직접 실행
 ```bash
 # 1. 패키지 설치
 pip install -r requirements.txt
@@ -96,8 +112,8 @@ http://127.0.0.1:8000/dashboard_page
 > ```
 
 ## 추후 계획
-- **카테고리 분류**: 버그/스타일/성능/보안으로 리뷰 코멘트를 자동 분류하고 대시보드에 통계 표시
-- **Docker화**: docker-compose로 FastAPI + Redis + Worker를 한 번에 구동
+- ~~**카테고리 분류**: 버그/스타일/성능/보안으로 리뷰 코멘트를 자동 분류하고 대시보드에 통계 표시~~
+- ~~**Docker화**: docker-compose로 FastAPI + Redis + Worker를 한 번에 구동~~
 - **파일별 분리 리뷰**: 대용량 PR에서 파일 단위로 Claude를 따로 호출해 정확도 향상
 - **PostgreSQL 전환**: 배포 환경에서 SQLite → PostgreSQL로 전환
 - **(선택) GitHub App 전환**: 현재는 저장소별 수동 웹훅 등록 방식이지만, GitHub App으로 전환하면 누구나 설치해서 쓸 수 있는 서비스로 확장 가능
