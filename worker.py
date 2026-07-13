@@ -4,7 +4,7 @@ from redis import Redis
 from rq import Worker, Queue
 from rq.worker import SimpleWorker
 
-load_dotenv()
+load_dotenv(override=False)
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
