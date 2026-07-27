@@ -6,6 +6,21 @@
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-27
+### Added
+- 대시보드 헤더 (다크 테마, GitHub/문서 링크)
+- 통계 카드 (총 리뷰 수, 버그, 보안 이슈, 저장소 수)
+- 저장소 드롭다운 필터 + PR 제목 검색
+- 페이지네이션
+
+### Changed
+- 대시보드 UI 전면 개편 (헤더, 통계 카드, 테이블 스타일 개선)
+- Render 배포 시도 후 Railway로 복귀 (안정성 우선)
+
+### Fixed
+- iframe 환경에서 CSS/JS 절대경로로 변경 (키오스크 대응)
+- 캐시 문제로 인한 스타일 미적용 해결 (`?v=2` 쿼리 추가)
+
 ## [0.5.0] - 2026-07-10
 ### Added
 - 카테고리(bug/style/performance/security)·심각도(info/caution/warning) 분류
