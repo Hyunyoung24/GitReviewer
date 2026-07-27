@@ -1,4 +1,6 @@
-fetch('/dashboard')
+// fetch('/dashboard')
+/* Railway 배포용 절대경로 API */
+fetch('https://gitreviewer-production-c6da.up.railway.app/dashboard')
     .then(res => res.json())
     .then(data => {
         const reviews = data.reviews;
