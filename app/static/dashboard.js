@@ -28,8 +28,7 @@ function loadDashboard(page = 1) {
             const repoFilter = document.getElementById('repoFilter');
             if (page === 1) {
                 repoFilter.innerHTML = '<option value="">전체 저장소</option>';
-                const uniqueRepos = [...new Set(reviews.map(r => r.repo))];
-                uniqueRepos.forEach(repo => {
+                Object.keys(data.repo_counts).forEach(repo => {
                     const option = document.createElement('option');
                     option.value = repo;
                     option.textContent = repo;
