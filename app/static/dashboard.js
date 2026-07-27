@@ -106,9 +106,6 @@ function renderPagination(totalPages, currentPage) {
 }
 
 function renderCharts(reviews, categories, repoCounts) {
-    /* 리뷰 현황 막대 차트 */
-    const repoCounts = data.repo_counts;
-
     new Chart(document.getElementById('reviewChart'), {
         type: 'bar',
         data: {
