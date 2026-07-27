@@ -82,7 +82,7 @@ function loadDashboard(page = 1) {
 
             /* 차트는 첫 페이지에서만 */
             if (page === 1) {
-                renderCharts(reviews, categories);
+                renderCharts(reviews, categories, data.repo_counts);
             }
         });
 }
@@ -105,12 +105,9 @@ function renderPagination(totalPages, currentPage) {
     }
 }
 
-function renderCharts(reviews, categories) {
+function renderCharts(reviews, categories, repoCounts) {
     /* 리뷰 현황 막대 차트 */
-    const repoCounts = {};
-    reviews.forEach(r => {
-        repoCounts[r.repo] = (repoCounts[r.repo] || 0) + 1;
-    });
+    const repoCounts = data.repo_counts;
 
     new Chart(document.getElementById('reviewChart'), {
         type: 'bar',

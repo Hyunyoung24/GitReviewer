@@ -50,11 +50,20 @@ def get_dashboard(db: Session = Depends(get_db), page: int = 1, per_page: int = 
     )
     categories = { cat: count for cat, count in category_counts }
 
+    # 전체 리뷰 기준 저장소별 집계 (차트용)
+    all_reviews = db.query(Review).all()
+    repo_counts = {}
+    for r in all_reviews:
+        repo = db.query(Repository).filter(Repository.id == r.repo_id).first()
+        repo_name = f"{repo.owner}/{repo.name}" if repo else "unknown"
+        repo_counts[repo_name] = repo_counts.get(repo_name, 0) + 1
+
     return {
         "reviews": result,
         "categories": categories,
         "total": total,
         "page": page,
         "per_page": per_page,
-        "total_pages": (total + per_page - 1) // per_page
+        "total_pages": (total + per_page - 1) // per_page,
+        "repo_counts": repo_counts
     }
