@@ -2,12 +2,13 @@
 let currentPage = 1;
 const perPage = 10;
 let allReviews = [];
+let currentRepo = '';
 
 // fetch('/dashboard')
 /* Railway 배포용 절대경로 API */
 function loadDashboard(page = 1) {
     /* Railway 배포용 절대경로 API */
-    fetch(`https://gitreviewer-production-c6da.up.railway.app/dashboard?page=${page}&per_page=${perPage}`)
+    fetch(`https://gitreviewer-production-c6da.up.railway.app/dashboard?page=${page}&per_page=${perPage}&repo=${encodeURIComponent(currentRepo)}`)
         .then(res => res.json())
         .then(data => {
             const reviews = data.reviews;
@@ -155,7 +156,10 @@ function filterTable() {
     });
 }
 
-document.getElementById('repoFilter').addEventListener('change', filterTable);
+document.getElementById('repoFilter').addEventListener('change', (e) => {
+    currentRepo = e.target.value;
+    loadDashboard(1);
+});
 document.getElementById('searchInput').addEventListener('input', filterTable);
 
 loadDashboard(1);

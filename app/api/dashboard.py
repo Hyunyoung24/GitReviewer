@@ -18,13 +18,23 @@ def dashboard_page(request: Request):
     )
 
 @router.get("/dashboard")
-def get_dashboard(db: Session = Depends(get_db), page: int = 1, per_page: int = 10):
-    # 전체 리뷰 수 계산
-    total = db.query(Review).count()
+def get_dashboard(db: Session = Depends(get_db), page: int = 1, per_page: int = 10, repo: str = None):
+    # 전체 리뷰 수 계산 (필터 적용)
+    query = db.query(Review)
+    if repo:
+        owner, name = repo.split("/")
+        db_repo = db.query(Repository).filter(
+            Repository.owner == owner,
+            Repository.name == name
+        ).first()
+        if db_repo:
+            query = query.filter(Review.repo_id == db_repo.id)
+        else:
+            query = query.filter(False)
 
-    # 페이지에 맞는 리뷰 가져오기
+    total = query.count()
     offset = (page - 1) * per_page
-    reviews = db.query(Review).order_by(Review.created_at.desc()).offset(offset).limit(per_page).all()
+    reviews = query.order_by(Review.created_at.desc()).offset(offset).limit(per_page).all()
     
     result = []
     for review in reviews:
