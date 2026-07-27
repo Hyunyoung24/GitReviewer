@@ -55,4 +55,35 @@
             </div>
             <div class="card">
                 <h2 class="card-title">카테고리별 코멘트</h2>
-                <canvas
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+        <!-- 리뷰 이력 테이블 -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2 class="table-title">최근 리뷰 이력</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>저장소</th>
+                        <th>PR</th>
+                        <th>제목</th>
+                        <th>상태</th>
+                        <th>날짜</th>
+                    </tr>
+                </thead>
+                <tbody id="reviewTable"></tbody>
+            </table>
+        </div>
+    </div>
+    <!-- 모달 -->
+    <div id="modal">
+        <div id="modal-content">
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    <script src="/static/dashboard.js"></script>
+</body>
+</html>
