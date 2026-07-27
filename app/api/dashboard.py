@@ -18,9 +18,13 @@ def dashboard_page(request: Request):
     )
 
 @router.get("/dashboard")
-def get_dashboard(db: Session = Depends(get_db)):
-    # 최근 리뷰 10개를 최신순으로 가져오기
-    reviews = db.query(Review).order_by(Review.created_at.desc()).limit(10).all()
+def get_dashboard(db: Session = Depends(get_db), page: int = 1, per_page: int = 10):
+    # 전체 리뷰 수 계산
+    total = db.query(Review).count()
+
+    # 페이지에 맞는 리뷰 가져오기
+    offset = (page - 1) * per_page
+    reviews = db.query(Review).order_by(Review.created_at.desc()).offset(offset).limit(per_page).all()
     
     result = []
     for review in reviews:
@@ -35,15 +39,22 @@ def get_dashboard(db: Session = Depends(get_db)):
             "status": review.status,
             # datetime을 JSON으로 직렬화할 수 있게 문자열로 변환
             "created_at": review.created_at.isoformat() if review.created_at else None,
-            "summary": review.summary, 
+            "summary": review.summary,
         })
 
+    # 카테고리별 코멘트 개수 집계
     category_counts = (
         db.query(ReviewComment.category, func.count(ReviewComment.id))
         .group_by(ReviewComment.category)
         .all()
     )
-
     categories = { cat: count for cat, count in category_counts }
 
-    return {"reviews": result, "categories": categories}
+    return {
+        "reviews": result,
+        "categories": categories,
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": (total + per_page - 1) // per_page
+    }
