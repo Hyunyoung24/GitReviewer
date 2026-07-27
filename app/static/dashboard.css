@@ -164,9 +164,52 @@ body {
     overflow: hidden;
 }
 
+/* 검색바 */
 .table-header {
     padding: 1rem 1.25rem;
     border-bottom: 1px solid #e1e4e8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.search-bar select {
+    padding: 6px 10px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #24292f;
+    background: #f6f8fa;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.search-bar select:focus {
+    border-color: #0969da;
+    background: white;
+}
+
+.search-bar input {
+    padding: 6px 10px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #24292f;
+    background: #f6f8fa;
+    outline: none;
+    width: 240px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.search-bar input:focus {
+    border-color: #0969da;
+    background: white;
+}
+
+.search-bar input::placeholder {
+    color: #8c959f;
 }
 
 .table-title {

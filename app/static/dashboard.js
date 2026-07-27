@@ -14,11 +14,40 @@ fetch('https://gitreviewer-production-c6da.up.railway.app/dashboard')
         const repos = new Set(reviews.map(r => r.repo));
         document.getElementById('totalRepos').textContent = repos.size;
 
+        /* 저장소 드롭다운 옵션 채우기 */
+        const repoFilter = document.getElementById('repoFilter');
+        const uniqueRepos = [...new Set(reviews.map(r => r.repo))];
+        uniqueRepos.forEach(repo => {
+            const option = document.createElement('option');
+            option.value = repo;
+            option.textContent = repo;
+            repoFilter.appendChild(option);
+        });
+
+        /* 필터링 함수 */
+        function filterTable() {
+            const repoVal = repoFilter.value;
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#reviewTable tr');
+            rows.forEach(tr => {
+                const repo = tr.dataset.repo || '';
+                const title = tr.dataset.title || '';
+                const repoMatch = !repoVal || repo === repoVal;
+                const searchMatch = !searchVal || title.toLowerCase().includes(searchVal) || repo.toLowerCase().includes(searchVal);
+                tr.style.display = repoMatch && searchMatch ? '' : 'none';
+            });
+        }
+
+        repoFilter.addEventListener('change', filterTable);
+        document.getElementById('searchInput').addEventListener('input', filterTable);
+
         /* 테이블에 리뷰 이력 채우기 */
         const tbody = document.getElementById('reviewTable');
         reviews.forEach(r => {
             const tr = document.createElement('tr');
             const date = new Date(r.created_at + 'Z').toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+            tr.dataset.repo = r.repo;
+            tr.dataset.title = r.title;
             tr.innerHTML = `
                 <td style="color: #8c959f;">${r.id}</td>
                 <td>
