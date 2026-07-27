@@ -227,3 +227,6 @@ __marimo__/
 node_modules/
 db.json
 yarn.lock
+
+# postgresql
+backup.sql
