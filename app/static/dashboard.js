@@ -35,6 +35,7 @@ function loadDashboard(page = 1) {
                     option.textContent = repo;
                     repoFilter.appendChild(option);
                 });
+                repoFilter.value = currentRepo;  // 선택값 복원
             }
 
             /* 테이블에 리뷰 이력 채우기 */
