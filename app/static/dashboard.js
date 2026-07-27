@@ -2,7 +2,15 @@ fetch('/dashboard')
     .then(res => res.json())
     .then(data => {
         const reviews = data.reviews;
+        const categories = data.categories;
         const modal = document.getElementById('modal');
+
+        /* 통계 카드 채우기 */
+        document.getElementById('totalReviews').textContent = reviews.length;
+        document.getElementById('totalBugs').textContent = categories['bug'] || 0;
+        document.getElementById('totalSecurity').textContent = categories['security'] || 0;
+        const repos = new Set(reviews.map(r => r.repo));
+        document.getElementById('totalRepos').textContent = repos.size;
 
         /* 테이블에 리뷰 이력 채우기 */
         const tbody = document.getElementById('reviewTable');
@@ -10,34 +18,38 @@ fetch('/dashboard')
             const tr = document.createElement('tr');
             const date = new Date(r.created_at + 'Z').toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
             tr.innerHTML = `
-                <td>${r.id}</td>
+                <td style="color: #8c959f;">${r.id}</td>
                 <td>
-                    <a href="https://github.com/${r.repo}" target="_blank">
+                    <a href="https://github.com/${r.repo}" target="_blank"
+                       style="color: #0969da; text-decoration: none;"
+                       onclick="event.stopPropagation()">
                         ${r.repo}
                     </a>
                 </td>
                 <td><span class="pr-badge">#${r.pr_number}</span></td>
                 <td>
-                    <a href="https://github.com/${r.repo}/pull/${r.pr_number}" target="_blank">
+                    <a href="https://github.com/${r.repo}/pull/${r.pr_number}" target="_blank"
+                       style="color: #24292f; text-decoration: none;"
+                       onclick="event.stopPropagation()">
                         ${r.title}
                     </a>
                 </td>
                 <td><span class="status-completed">${r.status === 'completed' ? '완료' : r.status}</span></td>
-                <td>${date}</td>
+                <td style="color: #57606a;">${date}</td>
             `;
-
             tr.addEventListener('click', () => {
-                document.getElementById('modal-body').innerHTML = marked.parse(r.summary);
+                document.getElementById('modal-body').innerHTML = marked.parse(r.summary || '');
                 modal.style.display = 'block';
             });
             tbody.appendChild(tr);
         });
 
+        /* 모달 닫기 */
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
-        })
+        });
 
-        /* Chart.js로 저장소별 리뷰 횟수 집계 */
+        /* 리뷰 현황 막대 차트 */
         const repoCounts = {};
         reviews.forEach(r => {
             repoCounts[r.repo] = (repoCounts[r.repo] || 0) + 1;
@@ -50,19 +62,19 @@ fetch('/dashboard')
                 datasets: [{
                     label: '리뷰 횟수',
                     data: Object.values(repoCounts),
-                    backgroundColor: '#0969da',
+                    backgroundColor: '#3b82f6',
                     borderRadius: 4,
+                    barThickness: 80,
                 }]
             },
             options: {
+                maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
             }
         });
 
-        /* 카테고리별 코멘트 차트 */
-        const categories = data.categories;
-
+        /* 카테고리별 도넛 차트 */
         new Chart(document.getElementById('categoryChart'), {
             type: 'doughnut',
             data: {
@@ -70,20 +82,20 @@ fetch('/dashboard')
                 datasets: [{
                     data: Object.values(categories),
                     backgroundColor: [
-                        '#cf222e',  /* bug - 빨강 */
-                        '#0969da',  /* general - 파랑 */
-                        '#8250df',  /* performance - 보라 */
-                        '#1a7f37',  /* style - 초록 */
-                        '#bf8700',  /* security - 노랑 */
+                        '#cf222e',
+                        '#0969da',
+                        '#8250df',
+                        '#1a7f37',
+                        '#bf8700',
                     ],
                 }]
             },
             options: {
-                plugins: {
-                    legend: { position: 'right' }
-                }
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'right' } }
             }
         });
     });
 
+/* 30초마다 자동 새로고침 */
 setInterval(() => location.reload(), 30000);

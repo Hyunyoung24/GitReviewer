@@ -5,48 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitReviewer 대시보드</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
     <link rel="stylesheet" href="/static/dashboard.css">
 </head>
 <body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">GR</div>
+                <span class="logo-text">GitReviewer</span>
+            </div>
+            <nav class="header-nav">
+                <a href="https://github.com/Hyunyoung24/GitReviewer" target="_blank" class="nav-link">GitHub</a>
+                <a href="https://github.com/Hyunyoung24/GitReviewer/blob/main/README.md" target="_blank" class="nav-btn">문서</a>
+            </nav>
+        </div>
+    </header>
+    <!-- 메인 컨테이너 -->
     <div class="container">
-        <h1>GitReviewer 대시보드</h1>
+        <!-- 통계 카드 -->
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">총 리뷰 수</div>
+                <div class="stat-value" id="totalReviews">-</div>
+                <div class="stat-sub">전체 기간</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">발견된 버그</div>
+                <div class="stat-value danger" id="totalBugs">-</div>
+                <div class="stat-sub">코멘트 기준</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">보안 이슈</div>
+                <div class="stat-value accent" id="totalSecurity">-</div>
+                <div class="stat-sub">코멘트 기준</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">연결된 저장소</div>
+                <div class="stat-value" id="totalRepos">-</div>
+                <div class="stat-sub">전체 기간</div>
+            </div>
+        </div>
+        <!-- 차트 -->
         <div class="chart-row">
-            <!-- 리뷰 통계 차트 -->
             <div class="card">
-                <h2>리뷰 현황</h2>
-                <canvas id="reviewChart" height="100"></canvas>
+                <h2 class="card-title">리뷰 현황</h2>
+                <canvas id="reviewChart"></canvas>
             </div>
-            <!-- 카테고리 통계 차트 -->
             <div class="card">
-                <h2>카테고리별 코멘트</h2>
-                <canvas id="categoryChart" height="100"></canvas>
-            </div>
-        <!-- 리뷰 이력 테이블 -->
-        </div>
-        <div class="card">
-            <h2>최근 리뷰 이력</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>저장소</th>
-                        <th>PR</th>
-                        <th>제목</th>
-                        <th>상태</th>
-                        <th>날짜</th>
-                    </tr>
-                </thead>
-                <tbody id="reviewTable"></tbody>
-            </table>
-        </div>
-    </div>
-    <div id="modal">
-        <div id="modal-content">
-            <div id="modal-body"></div>
-        </div>
-    </div>
-    <script src="/static/dashboard.js"></script>
-    <!-- 마크다운 HTML 변환 라이브러리 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-</body>
-</html>
+                <h2 class="card-title">카테고리별 코멘트</h2>
+                <canvas
