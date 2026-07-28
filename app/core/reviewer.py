@@ -1,6 +1,5 @@
 import os
 import datetime
-import json
 import anthropic
 from dotenv import load_dotenv
 from github import Github, Auth
@@ -66,47 +65,68 @@ def review_pr(repo_name: str, pr_number: int):
         # Claude 리뷰 요청
         # .env의 ANTHROPIC_API_KEY로 인증
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-        # Claude Sonnet 4.6 모델 호출, 최대 3000토큰 제한 (답변이 너무 짧으면 늘리기)
+
+        # tool use(함수 호출)로 구조화된 출력을 강제
+        # 이전에는 "JSON으로만 답해줘" 프롬프트 + json.loads로 직접 파싱했는데
+        # diff에 백슬래시(윈도우 경로, 정규식 등)가 섞여 있으면 Claude가 이스케이프를
+        # 빠뜨려서 json.loads가 "Invalid \escape" 오류로 죽는 문제가 있었음
+        # tool_choice로 도구 호출을 강제하면 Anthropic 쪽에서 JSON을 직접 파싱해
+        # message.content의 tool_use.input으로 넘겨주기 때문에 이 문제가 원천적으로 사라짐
+        review_tool = {
+            "name": "submit_review",
+            "description": "코드 리뷰 결과를 제출합니다.",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "summary": {
+                        "type": "string",
+                        "description": "전체 리뷰 요약, 마크다운 형식 (한국어, 3-5문장, '## 코드 리뷰'로 시작)"
+                    },
+                    "comments": {
+                        "type": "array",
+                        "maxItems": 3,
+                        "description": "라인별 코멘트, 최대 3개. diff에서 +로 시작하는 줄만 line으로 지정",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "path": {"type": "string", "description": "파일 경로"},
+                                "line": {"type": "integer", "description": "변경된 줄 번호"},
+                                "body": {"type": "string", "description": "해당 줄에 대한 코멘트 (한국어)"},
+                                "category": {"type": "string", "enum": ["bug", "style", "performance", "security"]},
+                                "severity": {"type": "string", "enum": ["info", "caution", "warning"]}
+                            },
+                            "required": ["path", "line", "body", "category", "severity"]
+                        }
+                    }
+                },
+                "required": ["summary", "comments"]
+            }
+        }
+
+        # Claude Sonnet 4.6 모델 호출, 최대 4096토큰 제한
         # 한 번만 질문하고 답변을 받는 구조이기 때문에 assistant 없이 user만 할당
         message = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=3000,
+            max_tokens=4096,
+            tools=[review_tool],
+            tool_choice={"type": "tool", "name": "submit_review"},
             messages=[
                 {
                     "role": "user",
                     "content": f"""오늘 날짜는 {datetime.date.today()}입니다.
-아래 코드 변경사항을 리뷰해주세요.
-반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트는 절대 포함하지 마세요.
-{{
-    "summary": "## 코드 리뷰\n\n전체 리뷰 요약을 마크다운 형식으로 작성 (한국어, 3-5문장)",
-    "comments": [
-        {{
-            "path": "파일 경로",
-            "line": 변경된 줄 번호 (숫자),
-            "body": "해당 줄에 대한 코멘트 (한국어)",
-            "category": "bug | style | performance | security 중 하나",
-            "severity": "info | caution | warning 중 하나"
-        }}
-    ]
-}}
-
-comments는 최대 3개까지만 작성하세요.
-diff에서 + 로 시작하는 줄만 line으로 지정하세요.
+아래 코드 변경사항을 리뷰하고, submit_review 도구를 호출해서 결과를 제출해주세요.
 
 {diff_text}"""
                 }
             ]
         )
 
-        # Claude API는 content를 리스트 형태로 반환
-        # [{"type: "text", "text": "" 코드 리뷰\n..."}] 구조
-        # content[0]으로 첫 번째 요소, 그 중에서 텍스트만 가져오기
-        raw_response = message.content[0].text
-        print(f"Claude 응답: {raw_response[:100]}...")
+        # tool_choice로 강제했으므로 content에는 tool_use 블록이 반드시 존재
+        # input은 Anthropic이 이미 파싱한 dict라 json.loads가 필요 없음
+        tool_use_block = next(b for b in message.content if b.type == "tool_use")
+        review_data = tool_use_block.input
+        print(f"Claude 응답 (tool_use): {str(review_data)[:100]}...")
 
-        # JSON 파싱, 마크다운 감싸기 제거
-        clean_response = raw_response.strip().removeprefix("```json").removesuffix("```").strip()
-        review_data = json.loads(clean_response)
         summary = review_data.get("summary", "")
         comments = review_data.get("comments", [])
 
