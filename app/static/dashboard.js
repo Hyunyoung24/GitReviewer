@@ -21,8 +21,9 @@ function loadDashboard(page = 1) {
                 document.getElementById('totalReviews').textContent = data.total;
                 document.getElementById('totalBugs').textContent = categories['bug'] || 0;
                 document.getElementById('totalSecurity').textContent = categories['security'] || 0;
-                const repos = new Set(reviews.map(r => r.repo));
-                document.getElementById('totalRepos').textContent = repos.size;
+                /* 현재 페이지(reviews)가 아니라 전체 데이터 기준인 repo_counts로 집계해야
+                   저장소가 여러 개여도 1페이지 리뷰가 한 저장소에 몰려있을 때 개수가 안 틀어짐 */
+                document.getElementById('totalRepos').textContent = Object.keys(data.repo_counts).length;
             }
 
             /* 저장소 드롭다운 옵션 채우기 */
