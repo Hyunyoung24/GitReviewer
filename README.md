@@ -122,5 +122,5 @@ http://127.0.0.1:8000/dashboard_page
 - ~~**카테고리 분류**: 버그/스타일/성능/보안으로 리뷰 코멘트를 자동 분류하고 대시보드에 통계 표시~~
 - ~~**Docker화**: docker-compose로 FastAPI + Redis + Worker를 한 번에 구동~~
 - **파일별 분리 리뷰**: 대용량 PR에서 파일 단위로 Claude를 따로 호출해 정확도 향상
-- **PostgreSQL 전환**: 배포 환경에서 SQLite → PostgreSQL로 전환
+- ~~**PostgreSQL 전환**: 배포 환경에서 SQLite → PostgreSQL로 전환~~
 - **(선택) GitHub App 전환**: 현재는 저장소별 수동 웹훅 등록 방식이지만, GitHub App으로 전환하면 누구나 설치해서 쓸 수 있는 서비스로 확장 가능

@@ -5,9 +5,12 @@
 [Semantic Versioning](https://semver.org/lang/ko/)을 준수합니다.
 
 ## [Unreleased]
+
+## [0.6.1] - 2026-07-28
 ### Fixed
 - diff 내 백슬래시로 인한 Claude 응답 JSON 파싱 실패(`Invalid \escape`) 문제 해결
 - 프롬프트 기반 JSON 파싱 → Claude API tool use(함수 호출) 구조화 출력으로 전환
+- 통계 카드의 저장소 수가 현재 페이지 리뷰 기준으로 집계되어 실제보다 적게 표시되던 문제 해결 (`repo_counts` 기준으로 변경)
 
 ## [0.6.0] - 2026-07-27
 ### Added
@@ -15,6 +18,7 @@
 - 통계 카드 (총 리뷰 수, 버그, 보안 이슈, 저장소 수)
 - 저장소 드롭다운 필터 + PR 제목 검색
 - 페이지네이션
+- PostgreSQL 전환 지원 (`DATABASE_URL` 환경변수로 SQLite/PostgreSQL 분기)
 
 ### Changed
 - 대시보드 UI 전면 개편 (헤더, 통계 카드, 테이블 스타일 개선)
