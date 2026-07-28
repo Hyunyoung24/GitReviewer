@@ -41,6 +41,13 @@ GitHub PR이 열리면 Claude AI가 자동으로 코드를 리뷰하고 라인 �
 - 같은 PR에 커밋이 추가될 때마다 리뷰가 중복 생성
 - 커밋 SHA와 PR 번호로 중복 리뷰 여부를 파악해서 이미 리뷰했을 경우 건너뛰게 처리해서 해결
 
+### JSON 파싱 실패로 인한 리뷰 누락
+- diff에 백슬래시(윈도우 경로, 정규식 등)가 포함되면 Claude가 응답 JSON에서 이스케이프를 빠뜨려 `json.loads`가 `Invalid \escape` 오류로 실패, 리뷰가 조용히 누락되는 문제
+
+  ![JSON 파싱 오류 로그](docs/screenshots/json-escape-error-log.png)
+
+- 프롬프트로 JSON 형식을 요청하고 텍스트를 직접 파싱하던 방식 대신, Claude API의 tool use(함수 호출)로 구조화된 출력을 강제해 해결; Anthropic 쪽에서 JSON을 직접 파싱해 전달하므로 이스케이프 문제 자체가 발생하지 않음
+
 ## 사용법
 ### 사전 준비
 - [ngrok](https://ngrok.com) 설치 및 계정 연동

@@ -5,6 +5,9 @@
 [Semantic Versioning](https://semver.org/lang/ko/)을 준수합니다.
 
 ## [Unreleased]
+### Fixed
+- diff 내 백슬래시로 인한 Claude 응답 JSON 파싱 실패(`Invalid \escape`) 문제 해결
+- 프롬프트 기반 JSON 파싱 → Claude API tool use(함수 호출) 구조화 출력으로 전환
 
 ## [0.6.0] - 2026-07-27
 ### Added
