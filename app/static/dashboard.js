@@ -170,6 +170,14 @@ document.getElementById('searchInput').addEventListener('input', filterTable);
 
 loadDashboard(1);
 
+/* 토스트 알림 */
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
 /* 설정 저장 */
 document.getElementById('saveConfig').addEventListener('click', () => {
     const promptStyle = document.getElementById('promptStyle').value;
@@ -182,7 +190,7 @@ document.getElementById('saveConfig').addEventListener('click', () => {
     })
     .then(res => res.json())
     .then(data => {
-        alert(`설정 저장됨: ${promptStyle} / ${maxTokens} 토큰`);
+        showToast(`설정 저장됨: ${promptStyle} / ${maxTokens} 토큰`);
         console.log('설정:', data);
     })
     .catch(err => console.error('설정 저장 실패:', err));

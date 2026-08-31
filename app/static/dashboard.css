@@ -353,6 +353,28 @@ tbody tr:last-child td { border-bottom: none; }
     border-color: #0969da;
 }
 
+/* 토스트 컨테이너 */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #24292f;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 200;
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* 모달 */
 #modal {
     display: none;
