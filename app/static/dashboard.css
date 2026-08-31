@@ -89,6 +89,63 @@ body {
     padding: 2rem;
 }
 
+/* 설정 패널 */
+.config-panel {
+    margin-bottom: 1.5rem;
+}
+
+.config-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+}
+
+.config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.config-item label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #57606a;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.config-item select {
+    padding: 6px 10px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #24292f;
+    background: #f6f8fa;
+    outline: none;
+    cursor: pointer;
+}
+
+.config-item select:focus {
+    border-color: #0969da;
+    background: white;
+}
+
+.config-btn {
+    padding: 7px 16px;
+    background: #0969da;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.config-btn:hover {
+    background: #0860ca;
+}
+
 /* 통계 카드 */
 .stat-grid {
     display: grid;

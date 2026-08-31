@@ -15,6 +15,12 @@ load_dotenv()
 
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
 
+# 리뷰 설정용 전역 변수
+review_config = {
+    "prompt_style": "general",
+    "max_tokens": 4096
+}
+
 # 앰 초기화, 라우터/정적 파일/템플릿 설정
 app = FastAPI()
 app.include_router(dashboard_router)
@@ -61,9 +67,21 @@ async def github_webhook(request: Request):
             # review_pr 함수를 Redis 큐에 등록해서 워커로 백그라운드 처리
             # 웹훅이 200 응답을 보내면 리뷰는 queue를 통해 비동기 실행
             # 응답 지연으로 인한 GitHub 웹훅 타임아웃 방지
-            q.enqueue(review_pr, repo_name, pr_number)
+            q.enqueue(review_pr, repo_name, pr_number, 
+                      review_config["prompt_style"], 
+                      review_config["max_tokens"])
     
     return {"status": "ok"}
+
+@app.get("/config")
+async def get_config():
+    return review_config
+
+@app.post("/config")
+async def update_config(config: dict):
+    review_config.update(config)
+    print(f"설정 변경: {review_config}")
+    return review_config
 
 # 서버 상태 확인용 엔드포인트 (모니터링용)
 @app.get("/health")
