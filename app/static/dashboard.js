@@ -166,5 +166,23 @@ document.getElementById('searchInput').addEventListener('input', filterTable);
 
 loadDashboard(1);
 
+/* 설정 저장 */
+document.getElementById('saveConfig').addEventListener('click', () => {
+    const promptStyle = document.getElementById('promptStyle').value;
+    const maxTokens = parseInt(document.getElementById('maxTokens').value);
+
+    fetch(`${BASE_URL}/config`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt_style: promptStyle, max_tokens: maxTokens })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(`설정 저장됨: ${promptStyle} / ${maxTokens} 토큰`);
+        console.log('설정:', data);
+    })
+    .catch(err => console.error('설정 저장 실패:', err));
+});
+
 /* 30초마다 자동 새로고침 */
 setInterval(() => loadDashboard(currentPage), 30000);
