@@ -4,6 +4,10 @@ const perPage = 10;
 let allReviews = [];
 let currentRepo = '';
 
+// BASE_URL 선언
+// Railway, 로컬 양쪽에 대응
+const BASE_URL = window.location.origin;
+
 // fetch('/dashboard')
 /* Railway 배포용 절대경로 API */
 function loadDashboard(page = 1) {
