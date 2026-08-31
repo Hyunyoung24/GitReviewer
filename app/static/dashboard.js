@@ -168,6 +168,14 @@ document.getElementById('repoFilter').addEventListener('change', (e) => {
 });
 document.getElementById('searchInput').addEventListener('input', filterTable);
 
+/* 페이지 로드 시 현재 설정 불러오기 */
+fetch(`${BASE_URL}/config`)
+    .then(res => res.json())
+    .then(config => {
+        document.getElementById('promptStyle').value = config.prompt_style;
+        document.getElementById('maxTokens').value = config.max_tokens;
+    });
+
 loadDashboard(1);
 
 /* 토스트 알림 */
