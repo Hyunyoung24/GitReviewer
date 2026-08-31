@@ -168,6 +168,15 @@ document.getElementById('repoFilter').addEventListener('change', (e) => {
 });
 document.getElementById('searchInput').addEventListener('input', filterTable);
 
+/* 설정 패널 토글 */
+document.getElementById('configToggle').addEventListener('click', () => {
+    const body = document.getElementById('configBody');
+    const arrow = document.querySelector('.config-arrow');
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    arrow.classList.toggle('open', !isOpen);
+});
+
 /* 페이지 로드 시 현재 설정 불러오기 */
 fetch(`${BASE_URL}/config`)
     .then(res => res.json())
