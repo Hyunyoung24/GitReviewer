@@ -182,6 +182,12 @@ function showToast(message) {
 document.getElementById('saveConfig').addEventListener('click', () => {
     const promptStyle = document.getElementById('promptStyle').value;
     const maxTokens = parseInt(document.getElementById('maxTokens').value);
+    const styleNames = {
+        "general": "일반 (전반적 리뷰)",
+        "security": "보안 중점",
+        "performance": "성능 중점",
+        "beginner": "초보자 친화적"
+    };
 
     fetch(`${BASE_URL}/config`, {
         method: 'POST',
@@ -190,7 +196,7 @@ document.getElementById('saveConfig').addEventListener('click', () => {
     })
     .then(res => res.json())
     .then(data => {
-        showToast(`설정 저장됨: ${promptStyle} / ${maxTokens} 토큰`);
+        showToast(`설정 저장됨: ${styleNames[promptStyle]} / ${maxTokens} 토큰`);
         console.log('설정:', data);
     })
     .catch(err => console.error('설정 저장 실패:', err));
