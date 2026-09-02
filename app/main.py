@@ -75,7 +75,11 @@ async def github_webhook(request: Request):
 
 @app.get("/config")
 async def get_config():
-    return review_config
+    from app.core.reviewer import style_instructions
+    return { 
+        **review_config,
+        "style_instructions": style_instructions
+    }
 
 @app.post("/config")
 async def update_config(config: dict):

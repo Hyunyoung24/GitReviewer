@@ -11,6 +11,13 @@ load_dotenv()
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
+# 프롬프트 스타일별 추가 지시사항
+style_instructions = {
+        "general": "전반적인 코드 품질, 버그, 개선점을 균형있게 리뷰해주세요.",
+        "security": "보안 취약점과 잠재적 위험에 집중해서 리뷰해주세요. XSS, SQL Injection, 인증/인가 문제 등을 중점적으로 확인해주세요.",
+        "performance": "성능 최적화 관점에서 리뷰해주세요. 불필요한 연산, 메모리 낭비, 느린 알고리즘 등을 중점적으로 확인해주세요.",
+        "beginner": "초보자가 이해하기 쉽게 친절하게 설명해주세요. 전문 용어는 쉽게 풀어서 설명하고, 개선 방법도 구체적인 예시와 함께 알려주세요."
+    }
 
 def review_pr(repo_name: str, pr_number: int, prompt_style: str = "general", max_tokens: int = 5000):
     print(f"리뷰 시작: {repo_name} PR #{pr_number}")
@@ -101,14 +108,6 @@ def review_pr(repo_name: str, pr_number: int, prompt_style: str = "general", max
                 },
                 "required": ["summary", "comments"]
             }
-        }
-
-        # 프롬프트 스타일별 추가 지시사항
-        style_instructions = {
-            "general": "전반적인 코드 품질, 버그, 개선점을 균형있게 리뷰해주세요.",
-            "security": "보안 취약점과 잠재적 위험에 집중해서 리뷰해주세요. XSS, SQL Injection, 인증/인가 문제 등을 중점적으로 확인해주세요.",
-            "performance": "성능 최적화 관점에서 리뷰해주세요. 불필요한 연산, 메모리 낭비, 느린 알고리즘 등을 중점적으로 확인해주세요.",
-            "beginner": "초보자가 이해하기 쉽게 친절하게 설명해주세요. 전문 용어는 쉽게 풀어서 설명하고, 개선 방법도 구체적인 예시와 함께 알려주세요."
         }
 
         instruction = style_instructions.get(prompt_style, style_instructions["general"])

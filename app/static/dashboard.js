@@ -178,12 +178,15 @@ document.getElementById('configToggle').addEventListener('click', () => {
 });
 
 /* 프롬프트 미리보기 */
-const stylePreview = {
-    "general": "전반적인 코드 품질, 버그, 개선점을 균형있게 리뷰해주세요.",
-    "security": "보안 취약점과 잠재적 위험에 집중해서 리뷰해주세요. XSS, SQL Injection, 인증/인가 문제 등을 중점적으로 확인해주세요.",
-    "performance": "성능 최적화 관점에서 리뷰해주세요. 불필요한 연산, 메모리 낭비, 느린 알고리즘 등을 중점적으로 확인해주세요.",
-    "beginner": "초보자가 이해하기 쉽게 친절하게 설명해주세요. 전문 용어는 쉽게 풀어서 설명하고, 개선 방법도 구체적인 예시와 함께 알려주세요."
-};
+fetch(`${BASE_URL}/config`)
+    .then(res => res.json())
+    .then(config => {
+        document.getElementById('promptStyle').value = config.prompt_style;
+        document.getElementById('maxTokens').value = config.max_tokens;
+        // style_instructions를 전역으로 저장
+        window.stylePreview = config.style_instructions;
+        updatePreview(config.prompt_style);
+    });
 
 /* 커스텀 선택 시 프롬프트 미리보기 숨기기 */
 document.getElementById('promptStyle').addEventListener('change', (e) => {
@@ -202,7 +205,7 @@ function updatePreview(style) {
     previewWrapper.style.display = isCustom ? 'none' : 'flex';
     
     if (!isCustom) {
-        previewBox.textContent = stylePreview[style] || '';
+        previewBox.textContent = window.stylePreview[style] || '';
     }
 }
 
