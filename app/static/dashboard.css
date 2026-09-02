@@ -124,7 +124,7 @@ body {
 
 .config-row {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 12px;
     flex-wrap: wrap;
 }

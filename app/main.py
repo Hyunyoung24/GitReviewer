@@ -18,7 +18,7 @@ WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
 # 리뷰 설정용 전역 변수
 review_config = {
     "prompt_style": "general",
-    "max_tokens": 4096
+    "max_tokens": 5000
 }
 
 # 앰 초기화, 라우터/정적 파일/템플릿 설정

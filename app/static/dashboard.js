@@ -209,7 +209,8 @@ document.getElementById('saveConfig').addEventListener('click', () => {
         "general": "일반 (전반적 리뷰)",
         "security": "보안 중점",
         "performance": "성능 중점",
-        "beginner": "초보자 친화적"
+        "beginner": "초보자 친화적",
+        "custom": "사용자 지정"
     };
 
     fetch(`${BASE_URL}/config`, {

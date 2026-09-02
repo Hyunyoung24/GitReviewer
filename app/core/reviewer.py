@@ -12,7 +12,7 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 
-def review_pr(repo_name: str, pr_number: int, prompt_style: str = "general", max_tokens: int = 4096):
+def review_pr(repo_name: str, pr_number: int, prompt_style: str = "general", max_tokens: int = 5000):
     print(f"리뷰 시작: {repo_name} PR #{pr_number}")
 
     # GitHub 연결
@@ -113,7 +113,7 @@ def review_pr(repo_name: str, pr_number: int, prompt_style: str = "general", max
 
         instruction = style_instructions.get(prompt_style, style_instructions["general"])
 
-        # Claude Sonnet 4.6 모델 호출, 최대 4096토큰 제한
+        # Claude Sonnet 4.6 모델 호출
         # 한 번만 질문하고 답변을 받는 구조이기 때문에 assistant 없이 user만 할당
         message = client.messages.create(
             model="claude-sonnet-4-6",
