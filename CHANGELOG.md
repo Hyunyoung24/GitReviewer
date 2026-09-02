@@ -5,11 +5,22 @@
 [Semantic Versioning](https://semver.org/lang/ko/)을 준수합니다.
 
 ## [Unreleased]
+### Added
+- 리뷰 설정 패널 (아코디언 UI)
+- 리뷰 스타일 선택 (일반/보안/성능/초보자/커스텀)
+- 커스텀 프롬프트 직접 입력 기능
+- 현재 프롬프트 미리보기 패널
+- 토큰 수 선택 (3000/5000/8000)
+- 설정 저장 토스트 알림
+- 페이지 로드 시 설정값 자동 복원
+- 서버사이드 저장소 필터링
+
 ### Security
-- Docker 이미지에 `.env`, DB 백업, `node_modules` 등 로컬 전용 파일이 딸려 들어가지 않도록 `.dockerignore`를 화이트리스트 방식(`app/`, `worker.py`, `requirements.txt`만 허용)으로 추가
+- Docker 이미지에 `.env`, DB 백업, `node_modules` 등 로컬 전용 파일이 딸려 들어가지 않도록 `.dockerignore`를 화이트리스트 방식으로 추가
 
 ### Fixed
 - requirements.txt 인코딩이 UTF-16으로 되돌아가 있던 것을 UTF-8로 재변환
+- 커스텀 프롬프트가 워커에 전달되지 않던 버그 수정
 
 ## [0.6.1] - 2026-07-28
 ### Fixed
