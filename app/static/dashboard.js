@@ -213,9 +213,6 @@ document.getElementById('promptStyle').addEventListener('change', (e) => {
     updatePreview(e.target.value);
 });
 
-// 페이지 로드 시 초기값 적용
-updatePreview(document.getElementById('promptStyle').value);
-
 /* 커스텀 프롬프트 표시/숨김 */
 document.getElementById('promptStyle').addEventListener('change', (e) => {
     const wrapper = document.getElementById('customPromptWrapper');
