@@ -177,6 +177,34 @@ document.getElementById('configToggle').addEventListener('click', () => {
     arrow.classList.toggle('open', !isOpen);
 });
 
+/* 프롬프트 미리보기 */
+const stylePreview = {
+    "general": "전반적인 코드 품질, 버그, 개선점을 균형있게 리뷰해주세요.",
+    "security": "보안 취약점과 잠재적 위험에 집중해서 리뷰해주세요. XSS, SQL Injection, 인증/인가 문제 등을 중점적으로 확인해주세요.",
+    "performance": "성능 최적화 관점에서 리뷰해주세요. 불필요한 연산, 메모리 낭비, 느린 알고리즘 등을 중점적으로 확인해주세요.",
+    "beginner": "초보자가 이해하기 쉽게 친절하게 설명해주세요. 전문 용어는 쉽게 풀어서 설명하고, 개선 방법도 구체적인 예시와 함께 알려주세요."
+};
+
+document.getElementById('previewPrompt').addEventListener('click', () => {
+    const style = document.getElementById('promptStyle').value;
+    const preview = stylePreview[style];
+    document.getElementById('modal-body').innerHTML = `
+        <h3 style="margin-bottom: 12px; color: #24292f;">현재 프롬프트: ${document.getElementById('promptStyle').options[document.getElementById('promptStyle').selectedIndex].text}</h3>
+        <hr style="border: none; border-top: 1px solid #e1e4e8; margin-bottom: 12px;">
+        <p style="color: #57606a; line-height: 1.6;">${preview}</p>
+    `;
+    document.getElementById('modal').style.display = 'block';
+});
+
+/* 커스텀 선택 시 미리보기 버튼 숨기기 */
+document.getElementById('promptStyle').addEventListener('change', (e) => {
+    const wrapper = document.getElementById('customPromptWrapper');
+    const previewBtn = document.getElementById('previewPrompt');
+    const isCustom = e.target.value === 'custom';
+    wrapper.style.display = isCustom ? 'flex' : 'none';
+    previewBtn.style.display = isCustom ? 'none' : 'inline-block';
+});
+
 /* 커스텀 프롬프트 표시/숨김 */
 document.getElementById('promptStyle').addEventListener('change', (e) => {
     const wrapper = document.getElementById('customPromptWrapper');
