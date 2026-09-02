@@ -185,25 +185,33 @@ const stylePreview = {
     "beginner": "초보자가 이해하기 쉽게 친절하게 설명해주세요. 전문 용어는 쉽게 풀어서 설명하고, 개선 방법도 구체적인 예시와 함께 알려주세요."
 };
 
-document.getElementById('previewPrompt').addEventListener('click', () => {
-    const style = document.getElementById('promptStyle').value;
-    const preview = stylePreview[style];
-    document.getElementById('modal-body').innerHTML = `
-        <h3 style="margin-bottom: 12px; color: #24292f;">현재 프롬프트: ${document.getElementById('promptStyle').options[document.getElementById('promptStyle').selectedIndex].text}</h3>
-        <hr style="border: none; border-top: 1px solid #e1e4e8; margin-bottom: 12px;">
-        <p style="color: #57606a; line-height: 1.6;">${preview}</p>
-    `;
-    document.getElementById('modal').style.display = 'block';
-});
-
-/* 커스텀 선택 시 미리보기 버튼 숨기기 */
+/* 커스텀 선택 시 프롬프트 미리보기 숨기기 */
 document.getElementById('promptStyle').addEventListener('change', (e) => {
     const wrapper = document.getElementById('customPromptWrapper');
-    const previewBtn = document.getElementById('previewPrompt');
     const isCustom = e.target.value === 'custom';
     wrapper.style.display = isCustom ? 'flex' : 'none';
-    previewBtn.style.display = isCustom ? 'none' : 'inline-block';
 });
+
+/* 프롬프트 미리보기 자동 업데이트 */
+function updatePreview(style) {
+    const previewWrapper = document.getElementById('previewWrapper');
+    const previewBox = document.getElementById('promptPreviewBox');
+    const isCustom = style === 'custom';
+    
+    document.getElementById('customPromptWrapper').style.display = isCustom ? 'flex' : 'none';
+    previewWrapper.style.display = isCustom ? 'none' : 'flex';
+    
+    if (!isCustom) {
+        previewBox.textContent = stylePreview[style] || '';
+    }
+}
+
+document.getElementById('promptStyle').addEventListener('change', (e) => {
+    updatePreview(e.target.value);
+});
+
+// 페이지 로드 시 초기값 적용
+updatePreview(document.getElementById('promptStyle').value);
 
 /* 커스텀 프롬프트 표시/숨김 */
 document.getElementById('promptStyle').addEventListener('change', (e) => {
