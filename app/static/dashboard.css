@@ -137,6 +137,17 @@ body {
     flex: 1;
 }
 
+#promptPreviewBox {
+    padding: 8px 10px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #57606a;
+    background: #f6f8fa;
+    line-height: 1.6;
+    min-height: 58px;
+}
+
 #customPrompt {
     width: 100%;
     padding: 8px 10px;
