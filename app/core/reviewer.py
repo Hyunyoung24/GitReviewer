@@ -19,7 +19,7 @@ style_instructions = {
         "beginner": "초보자가 이해하기 쉽게 친절하게 설명해주세요. 전문 용어는 쉽게 풀어서 설명하고, 개선 방법도 구체적인 예시와 함께 알려주세요."
     }
 
-def review_pr(repo_name: str, pr_number: int, prompt_style: str = "general", max_tokens: int = 5000):
+def review_pr(repo_name: str, pr_number: int, prompt_style: str = "general", max_tokens: int = 5000, custom_prompt: str = ""):
     print(f"리뷰 시작: {repo_name} PR #{pr_number}")
 
     # GitHub 연결
