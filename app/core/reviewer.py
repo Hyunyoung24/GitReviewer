@@ -110,7 +110,10 @@ def review_pr(repo_name: str, pr_number: int, prompt_style: str = "general", max
             }
         }
 
-        instruction = style_instructions.get(prompt_style, style_instructions["general"])
+        if prompt_style == "custom" and custom_prompt:
+            instruction = custom_prompt
+        else:
+            instruction = style_instructions.get(prompt_style, style_instructions["general"])
 
         # Claude Sonnet 4.6 모델 호출
         # 한 번만 질문하고 답변을 받는 구조이기 때문에 assistant 없이 user만 할당
