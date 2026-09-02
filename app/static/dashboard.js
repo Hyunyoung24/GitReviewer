@@ -225,6 +225,12 @@ fetch(`${BASE_URL}/config`)
     .then(config => {
         document.getElementById('promptStyle').value = config.prompt_style;
         document.getElementById('maxTokens').value = config.max_tokens;
+        // 커스텀 프롬프트 복원
+        if (config.custom_prompt) {
+            document.getElementById('customPrompt').value = config.custom_prompt;
+        }
+        window.stylePreview = config.style_instructions;
+        updatePreview(config.prompt_style);
     });
 
 loadDashboard(1);
