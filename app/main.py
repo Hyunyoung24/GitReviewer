@@ -18,7 +18,8 @@ WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
 # 리뷰 설정용 전역 변수
 review_config = {
     "prompt_style": "general",
-    "max_tokens": 5000
+    "max_tokens": 5000,
+    "custom_prompt": ""
 }
 
 # 앰 초기화, 라우터/정적 파일/템플릿 설정
@@ -67,9 +68,10 @@ async def github_webhook(request: Request):
             # review_pr 함수를 Redis 큐에 등록해서 워커로 백그라운드 처리
             # 웹훅이 200 응답을 보내면 리뷰는 queue를 통해 비동기 실행
             # 응답 지연으로 인한 GitHub 웹훅 타임아웃 방지
-            q.enqueue(review_pr, repo_name, pr_number, 
-                      review_config["prompt_style"], 
-                      review_config["max_tokens"])
+            q.enqueue(review_pr, repo_name, pr_number,
+                review_config["prompt_style"],
+                review_config["max_tokens"],
+                review_config.get("custom_prompt", ""))
     
     return {"status": "ok"}
 

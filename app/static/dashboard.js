@@ -248,11 +248,16 @@ document.getElementById('saveConfig').addEventListener('click', () => {
         "beginner": "초보자 친화적",
         "custom": "사용자 지정"
     };
+    const customPrompt = document.getElementById('customPrompt').value;
 
     fetch(`${BASE_URL}/config`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt_style: promptStyle, max_tokens: maxTokens })
+       body: JSON.stringify({ 
+            prompt_style: promptStyle, 
+            max_tokens: maxTokens,
+            custom_prompt: promptStyle === 'custom' ? customPrompt : ""
+        })
     })
     .then(res => res.json())
     .then(data => {
