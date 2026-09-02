@@ -177,6 +177,12 @@ document.getElementById('configToggle').addEventListener('click', () => {
     arrow.classList.toggle('open', !isOpen);
 });
 
+/* 커스텀 프롬프트 표시/숨김 */
+document.getElementById('promptStyle').addEventListener('change', (e) => {
+    const wrapper = document.getElementById('customPromptWrapper');
+    wrapper.style.display = e.target.value === 'custom' ? 'flex' : 'none';
+});
+
 /* 페이지 로드 시 현재 설정 불러오기 */
 fetch(`${BASE_URL}/config`)
     .then(res => res.json())

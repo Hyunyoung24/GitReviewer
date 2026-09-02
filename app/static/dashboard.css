@@ -89,6 +89,7 @@ body {
     padding: 2rem;
 }
 
+/* 설정 패널 */
 .config-header h2 {
     margin-bottom: 0;
 }
@@ -117,25 +118,6 @@ body {
     margin-top: 16px;
 }
 
-#customPrompt {
-    padding: 8px 10px;
-    border: 1px solid #d0d7de;
-    border-radius: 6px;
-    font-size: 13px;
-    color: #24292f;
-    background: #f6f8fa;
-    outline: none;
-    resize: vertical;
-    min-width: 300px;
-    font-family: inherit;
-}
-
-#customPrompt:focus {
-    border-color: #0969da;
-    background: white;
-}
-
-/* 설정 패널 */
 .config-panel {
     margin-bottom: 1.5rem;
 }
@@ -143,7 +125,35 @@ body {
 .config-row {
     display: flex;
     align-items: flex-end;
-    gap: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.config-row-bottom {
+    margin-top: 12px;
+}
+
+.config-custom {
+    flex: 1;
+}
+
+#customPrompt {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #24292f;
+    background: #f6f8fa;
+    outline: none;
+    resize: none;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+#customPrompt:focus {
+    border-color: #0969da;
+    background: white;
 }
 
 .config-item {
