@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 
 def install_requirements():
     # exe로 실행 중이면 스킵
@@ -22,18 +23,29 @@ import time
 import ctypes
 import shutil
 
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 from PIL import Image, ImageTk
 from customtkinter import CTkImage
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
 
+try:
+    from app.init_db import init_db
+    init_db()
+except Exception:
+    pass
+
 class GitReviewerGUI:
     def __init__(self, root):
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("GitReviewer")
         self.root = root
         self.root.title("GitReviewer")
-        self.root.iconbitmap("assets/icon.ico")
+        self.root.iconbitmap(os.path.join(BASE_DIR, "assets", "icon.ico"))
         self.root.geometry("240x360")
         self.root.resizable(False, False)
 
@@ -110,8 +122,8 @@ class GitReviewerGUI:
             font=("맑은 고딕", 12), text_color="gray").pack()
 
         # 아이콘 로드
-        img_normal = self._tint_icon("assets/settings.png", color=(128, 128, 128))
-        img_rotated = self._tint_icon("assets/settings.png", color=(128, 128, 128))
+        img_normal = self._tint_icon(os.path.join(BASE_DIR, "assets", "settings.png"), color=(128, 128, 128))
+        img_rotated = self._tint_icon(os.path.join(BASE_DIR, "assets", "settings.png"), color=(128, 128, 128))
         img_rotated = img_rotated.rotate(22.5, expand=False)
 
         icon = CTkImage(light_image=img_normal, size=(20, 20))
@@ -192,7 +204,7 @@ class GitReviewerGUI:
             
         self._settings_win = ctk.CTkToplevel(self.root)
         self._settings_win.title("GitReviewer 설정")
-        self._settings_win.iconbitmap("assets/icon.ico")
+        self._settings_win.iconbitmap(os.path.join(BASE_DIR, "assets", "icon.ico"))
         self._settings_win.geometry("300x360")
         self._settings_win.resizable(False, False)
         self._settings_win.attributes("-topmost", True)
@@ -320,7 +332,8 @@ class GitReviewerGUI:
     def _run_services(self):
         # DB 초기화
         try:
-            subprocess.run([sys.executable, "-m", "app.init_db"], timeout=5)
+            from app.init_db import init_db
+            init_db()
         except Exception:
             pass
 
