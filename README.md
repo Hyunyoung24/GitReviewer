@@ -48,8 +48,8 @@ sequenceDiagram
 - Claude는 코드 이해도가 LLM 중 최상위 수준이며 200K 토큰의 긴 컨텍스트를 처리할 수 있어 대규모 PR도 분석 가능
 
 ## 보안
-- **WEBHOOK_SECRET** (필수): GitHub 웹훅 서명 검증에 사용됩니다. 미설정 시 모든 웹훅 요청이 거부(401)됩니다.
-- **CONFIG_TOKEN** (권장): 대시보드 설정 API(`/config`) 인증에 사용됩니다. 미설정 시 누구나 리뷰 설정을 변경할 수 있으므로, 외부에 서버를 노출하는 경우 반드시 설정하세요.
+- **WEBHOOK_SECRET** (필수): GitHub 웹훅 서명 검증에 사용, 미설정 시 모든 웹훅 요청이 거부(401)
+- **CONFIG_TOKEN** (필수/권장): 대시보드 설정 API(`/config`) 인증에 사용; 미설정 시 누구나 리뷰 설정을 변경할 수 있으므로, 외부에 서버를 노출하는 경우에는 필수
 
 토큰 생성 예시:
 ```bash
@@ -111,9 +111,8 @@ sudo service redis-server start
 #### GUI / .exe (권장 1)
 ```bash
 # 1. 최신 GitReviewer.exe 다운로드
-```
 [Releases](https://github.com/Hyunyoung24/GitReviewer/releases)
-```bash
+
 # 2. GitReviewer.exe 실행, 설정 후 저장
 Anthropic API 키: 클로드 API 키
 GitHub 개인 접근용 토큰: 해당 리포지토리 접근 가능한 토큰
