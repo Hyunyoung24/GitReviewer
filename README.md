@@ -121,6 +121,9 @@ GitHub 리포지토리용 웹훅 시크릿: 웹훅 Secret 값
 API 요청 헤더용 토큰 (비밀번호): 자신만 아는 임의의 문자열, 특수문자 사용 X
 
 # 3. 실행 버튼 클릭
+
+# 4. 대시보드 실행
+http://127.0.0.1:8000/dashboard_page
 ```
 
 #### GUI / .py (권장 2)
@@ -137,6 +140,9 @@ GitHub 리포지토리용 웹훅 시크릿: 웹훅 Secret 값
 API 요청 헤더용 토큰 (비밀번호): 자신만 아는 임의의 문자열, 특수문자 사용 X
 
 # 4. 실행 버튼 클릭
+
+# 5. 대시보드 실행
+http://127.0.0.1:8000/dashboard_page
 ```
 
 #### Docker
@@ -156,6 +162,9 @@ python -m app.init_db
 
 # 4. 실행 (FastAPI + Redis + Worker)
 docker-compose up --build
+
+# 5. 대시보드 실행
+http://127.0.0.1:8000/dashboard_page
 ```
 
 #### 로컬에서 직접 실행

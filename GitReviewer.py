@@ -86,7 +86,8 @@ class GitReviewerGUI:
         if docker_check.returncode == 0:
             self.processes["Redis"] = subprocess.Popen(
                 ["docker", "run", "--rm", "-p", "6379:6379", "redis:7-alpine"],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                creationflags=subprocess.CREATE_NO_WINDOW
             )
             return True
 
@@ -95,7 +96,8 @@ class GitReviewerGUI:
         if wsl_check.returncode == 0:
             self.processes["Redis"] = subprocess.Popen(
                 ["wsl", "sudo", "service", "redis-server", "start"],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                creationflags=subprocess.CREATE_NO_WINDOW
             )
             return True
 
@@ -123,7 +125,7 @@ class GitReviewerGUI:
         # 타이틀
         ctk.CTkLabel(self.root, text="GitReviewer",
             font=("맑은 고딕", 22, "bold")).pack(pady=(20, 2))
-        ctk.CTkLabel(self.root, text="v0.8.0",
+        ctk.CTkLabel(self.root, text="v0.8.1",
             font=("맑은 고딕", 12), text_color="gray").pack()
 
         # 아이콘 로드
@@ -352,7 +354,8 @@ class GitReviewerGUI:
         # uvicorn
         self.processes["Uvicorn"] = subprocess.Popen(
             [_get_python(), "-m", "uvicorn", "app.main:app", "--port", "8000"],
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=subprocess.CREATE_NO_WINDOW
         )
         time.sleep(2)
         self._set_status("Uvicorn", True)
@@ -360,7 +363,8 @@ class GitReviewerGUI:
         # worker
         self.processes["Worker"] = subprocess.Popen(
             [_get_python(), "worker.py"],
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=subprocess.CREATE_NO_WINDOW
         )
         time.sleep(1)
         self._set_status("Worker", True)
@@ -368,7 +372,8 @@ class GitReviewerGUI:
         # ngrok
         self.processes["ngrok"] = subprocess.Popen(
             ["ngrok", "http", "8000"],
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=subprocess.CREATE_NO_WINDOW
         )
         time.sleep(3)
         self._fetch_ngrok_url()
