@@ -21,7 +21,7 @@ const BASE_URL = window.location.origin;
 /* Railway 배포용 절대경로 API */
 function loadDashboard(page = 1) {
     /* Railway 배포용 절대경로 API */
-    fetch(`https://gitreviewer-production-c6da.up.railway.app/dashboard?page=${page}&per_page=${perPage}&repo=${encodeURIComponent(currentRepo)}`)
+    fetch(`${BASE_URL}/dashboard?page=${page}&per_page=${perPage}&repo=${encodeURIComponent(currentRepo)}`)
         .then(res => res.json())
         .then(data => {
             const reviews = data.reviews;
