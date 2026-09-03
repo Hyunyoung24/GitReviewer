@@ -4,7 +4,16 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/)를 따르며,
 [Semantic Versioning](https://semver.org/lang/ko/)을 준수합니다.
 
-## [Unreleased]
+## [0.8.0] - 2026-09-03
+### Added
+- 로컬 실행용 GUI 구현
+
+### Security
+- `WEBHOOK_SECRET` 미설정 시 서명 검증을 건너뛰던 동작을 요청 거부(401)로 변경
+- `/config` 엔드포인트에 `CONFIG_TOKEN` 기반 Bearer 토큰 인증 추가
+- 서버 시작 시 `WEBHOOK_SECRET`, `CONFIG_TOKEN` 미설정 경고 로그 출력
+
+## [0.7.0] - 2026-09-02
 ### Added
 - 리뷰 설정 패널 (아코디언 UI)
 - 리뷰 스타일 선택 (일반/보안/성능/초보자/커스텀)

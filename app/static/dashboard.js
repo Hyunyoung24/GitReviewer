@@ -1,3 +1,12 @@
+// CONFIG_TOKEN: 서버에서 주입된 인증 토큰
+const CONFIG_TOKEN = window.__CONFIG_TOKEN__ || "";
+
+function authHeaders() {
+    const headers = { "Content-Type": "application/json" };
+    if (CONFIG_TOKEN) headers["Authorization"] = "Bearer " + CONFIG_TOKEN;
+    return headers;
+}
+
 // 현재 페이지, 페이지당 갯수
 let currentPage = 1;
 const perPage = 10;
@@ -178,7 +187,7 @@ document.getElementById('configToggle').addEventListener('click', () => {
 });
 
 /* 프롬프트 미리보기 */
-fetch(`${BASE_URL}/config`)
+fetch(`${BASE_URL}/config`, { headers: authHeaders() })
     .then(res => res.json())
     .then(config => {
         document.getElementById('promptStyle').value = config.prompt_style;
@@ -220,7 +229,7 @@ document.getElementById('promptStyle').addEventListener('change', (e) => {
 });
 
 /* 페이지 로드 시 현재 설정 불러오기 */
-fetch(`${BASE_URL}/config`)
+fetch(`${BASE_URL}/config`, { headers: authHeaders() })
     .then(res => res.json())
     .then(config => {
         document.getElementById('promptStyle').value = config.prompt_style;
@@ -258,7 +267,7 @@ document.getElementById('saveConfig').addEventListener('click', () => {
 
     fetch(`${BASE_URL}/config`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
        body: JSON.stringify({ 
             prompt_style: promptStyle, 
             max_tokens: maxTokens,

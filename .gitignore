@@ -230,3 +230,11 @@ yarn.lock
 
 # postgresql
 backup.sql
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# Executable
+*.exe

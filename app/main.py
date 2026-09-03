@@ -14,6 +14,13 @@ from fastapi.responses import HTMLResponse
 load_dotenv()
 
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
+CONFIG_TOKEN = os.getenv("CONFIG_TOKEN", "")
+
+# 보안 경고: WEBHOOK_SECRET 또는 CONFIG_TOKEN이 미설정이면 서버 시작 시 경고
+if not WEBHOOK_SECRET:
+    print("[경고] WEBHOOK_SECRET이 설정되지 않았습니다. 웹훅 서명 검증이 비활성화됩니다.")
+if not CONFIG_TOKEN:
+    print("[경고] CONFIG_TOKEN이 설정되지 않았습니다. /config 엔드포인트가 보호되지 않습니다.")
 
 # 리뷰 설정용 전역 변수
 review_config = {
@@ -32,9 +39,9 @@ redis_conn = Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
 q = Queue(connection=redis_conn)
 
 def verify_signature(payload: bytes, signature: str) -> bool:
-    # .env의 WEBHOOK_SECRET이 비어 있을 경우 서명 검증 생략
+    # WEBHOOK_SECRET이 비어 있으면 서명 검증 불가 → 거부
     if not WEBHOOK_SECRET:
-        return True
+        return False
     # WEBHOOK_SECRET으로 payload를 SHA256 해시화해서 서명 생성
     expected = "sha256=" + hmac.new(
         WEBHOOK_SECRET.encode(),
@@ -75,8 +82,17 @@ async def github_webhook(request: Request):
     
     return {"status": "ok"}
 
+def verify_config_token(request: Request):
+    """CONFIG_TOKEN이 설정된 경우 Bearer 토큰 검증"""
+    if not CONFIG_TOKEN:
+        return  # 토큰 미설정 시 인증 생략 (경고는 시작 시 출력됨)
+    auth = request.headers.get("Authorization", "")
+    if not auth.startswith("Bearer ") or not hmac.compare_digest(auth[7:], CONFIG_TOKEN):
+        raise HTTPException(status_code=401, detail="Invalid or missing CONFIG_TOKEN")
+
 @app.get("/config")
-async def get_config():
+async def get_config(request: Request):
+    verify_config_token(request)
     from app.core.reviewer import style_instructions
     return { 
         **review_config,
@@ -84,7 +100,8 @@ async def get_config():
     }
 
 @app.post("/config")
-async def update_config(config: dict):
+async def update_config(request: Request, config: dict):
+    verify_config_token(request)
     review_config.update(config)
     print(f"설정 변경: {review_config}")
     return review_config

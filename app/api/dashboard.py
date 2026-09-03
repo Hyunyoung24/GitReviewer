@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+import os
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -14,7 +15,8 @@ templates = Jinja2Templates(directory="app/templates")
 def dashboard_page(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="dashboard.html"
+        name="dashboard.html",
+        context={"config_token": os.getenv("CONFIG_TOKEN", "")}
     )
 
 @router.get("/dashboard")
