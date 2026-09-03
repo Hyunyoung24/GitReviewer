@@ -28,6 +28,11 @@ if getattr(sys, 'frozen', False):
 else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+def _get_python():
+    if getattr(sys, 'frozen', False):
+        return shutil.which("python") or shutil.which("python3") or "python"
+    return sys.executable
+
 from PIL import Image, ImageTk
 from customtkinter import CTkImage
 
@@ -346,7 +351,7 @@ class GitReviewerGUI:
 
         # uvicorn
         self.processes["Uvicorn"] = subprocess.Popen(
-            [sys.executable, "-m", "uvicorn", "app.main:app", "--port", "8000"],
+            [_get_python(), "-m", "uvicorn", "app.main:app", "--port", "8000"],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
         time.sleep(2)
@@ -354,7 +359,7 @@ class GitReviewerGUI:
 
         # worker
         self.processes["Worker"] = subprocess.Popen(
-            [sys.executable, "worker.py"],
+            [_get_python(), "worker.py"],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
         time.sleep(1)

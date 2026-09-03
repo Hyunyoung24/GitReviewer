@@ -118,7 +118,7 @@ sudo service redis-server start
 Anthropic API 키: 클로드 API 키
 GitHub 개인 접근용 토큰: 해당 리포지토리 접근 가능한 토큰
 GitHub 리포지토리용 웹훅 시크릿: 웹훅 Secret 값
-API 요청 헤더용 토큰 (비밀번호): 자신만 아는 임의의 문자열
+API 요청 헤더용 토큰 (비밀번호): 자신만 아는 임의의 문자열, 특수문자 사용 X
 
 # 3. 실행 버튼 클릭
 ```
@@ -134,7 +134,7 @@ python GitReviewer.py
 Anthropic API 키: 클로드 API 키
 GitHub 개인 접근용 토큰: 해당 리포지토리 접근 가능한 토큰
 GitHub 리포지토리용 웹훅 시크릿: 웹훅 Secret 값
-API 요청 헤더용 토큰 (비밀번호): 자신만 아는 임의의 문자열
+API 요청 헤더용 토큰 (비밀번호): 자신만 아는 임의의 문자열, 특수문자 사용 X
 
 # 4. 실행 버튼 클릭
 ```
