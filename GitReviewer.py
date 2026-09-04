@@ -3,11 +3,8 @@ import sys
 import os
 
 def install_requirements():
-    # exe로 실행 중이면 스킵
-    if getattr(sys, 'frozen', False):
-        return
     try:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"],
+        subprocess.check_call([_get_python(), "-m", "pip", "install", "-r", "requirements.txt"],
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
         pass
