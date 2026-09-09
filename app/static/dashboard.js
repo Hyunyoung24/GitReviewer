@@ -13,6 +13,15 @@ const perPage = 10;
 let allReviews = [];
 let currentRepo = '';
 
+// 차트 인스턴스
+let reviewChartInstance = null;
+let categoryChartInstance = null;
+
+// 대시보드 테마
+let lastCategories = {};
+let lastRepoCounts = {};
+const themeToggle = document.getElementById('themeToggle');
+
 // BASE_URL 선언
 // Railway, 로컬 양쪽에 대응
 const BASE_URL = window.location.origin;
@@ -22,8 +31,13 @@ const BASE_URL = window.location.origin;
 function loadDashboard(page = 1) {
     /* Railway 배포용 절대경로 API */
     fetch(`${BASE_URL}/dashboard?page=${page}&per_page=${perPage}&repo=${encodeURIComponent(currentRepo)}`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error("서버 오류");
+            return res.json();
+        })
         .then(data => {
+            lastCategories = data.categories;
+            lastRepoCounts = data.repo_counts;
             const reviews = data.reviews;
             const categories = data.categories;
             const modal = document.getElementById('modal');
@@ -61,10 +75,10 @@ function loadDashboard(page = 1) {
                 tr.dataset.repo = r.repo;
                 tr.dataset.title = r.title;
                 tr.innerHTML = `
-                    <td style="color: #8c959f;">${r.id}</td>
+                    <td class="td-muted">${r.id}</td>
                     <td>
                         <a href="https://github.com/${r.repo}" target="_blank"
-                           style="color: #0969da; text-decoration: none;"
+                           class="repo-link" 
                            onclick="event.stopPropagation()">
                             ${r.repo}
                         </a>
@@ -72,13 +86,13 @@ function loadDashboard(page = 1) {
                     <td><span class="pr-badge">#${r.pr_number}</span></td>
                     <td>
                         <a href="https://github.com/${r.repo}/pull/${r.pr_number}" target="_blank"
-                           style="color: #24292f; text-decoration: none;"
+                           class="title-link"
                            onclick="event.stopPropagation()">
                             ${r.title}
                         </a>
                     </td>
                     <td><span class="status-completed">${r.status === 'completed' ? '완료' : r.status}</span></td>
-                    <td style="color: #57606a;">${date}</td>
+                    <td class="td-sub">${date}</td>
                 `;
                 tr.addEventListener('click', () => {
                     document.getElementById('modal-body').innerHTML = marked.parse(r.summary || '');
@@ -98,6 +112,14 @@ function loadDashboard(page = 1) {
             /* 차트는 첫 페이지에서만 */
             if (page === 1) {
                 renderCharts(reviews, categories, data.repo_counts);
+            }
+        })
+        .catch(error =>{
+            if (error.message === '서버 오류' || error instanceof TypeError) {
+                document.querySelector('.table-card')
+                .innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">서버가 실행 중이 아닙니다.</p>';
+            } else {
+                console.error('대시보드 로드 오류:', error);
             }
         });
 }
@@ -120,15 +142,32 @@ function renderPagination(totalPages, currentPage) {
     }
 }
 
+// 라이트모드, 다크모드 차트 색상 지정
+function getChartColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    return {
+        bar: isDark ? '#e85d04' : '#3b82f6',
+        doughnut: isDark
+            ? ['#f85149', '#58a6ff', '#bc8cff', '#3fb950', '#d29922']
+            : ['#cf222e', '#0969da', '#8250df', '#1a7f37', '#bf8700'],
+        text: isDark ? '#e6edf3' : '#24292f',
+        grid: isDark ? '#30363d' : '#e1e4e8',
+    };
+}
+
 function renderCharts(reviews, categories, repoCounts) {
-    new Chart(document.getElementById('reviewChart'), {
+    const colors = getChartColors();
+    if (reviewChartInstance) reviewChartInstance.destroy();
+    if (categoryChartInstance) categoryChartInstance.destroy();
+
+    reviewChartInstance = new Chart(document.getElementById('reviewChart'), {
         type: 'bar',
         data: {
             labels: Object.keys(repoCounts),
             datasets: [{
                 label: '리뷰 횟수',
                 data: Object.values(repoCounts),
-                backgroundColor: '#3b82f6',
+                backgroundColor: colors.bar,
                 borderRadius: 4,
                 barThickness: 80,
             }]
@@ -136,23 +175,27 @@ function renderCharts(reviews, categories, repoCounts) {
         options: {
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1, color: colors.text }, grid: { color: colors.grid } },
+                x: { ticks: { color: colors.text }, grid: { display: false } }
+            }
         }
     });
 
     /* 카테고리별 도넛 차트 */
-    new Chart(document.getElementById('categoryChart'), {
+    categoryChartInstance = new Chart(document.getElementById('categoryChart'), {
         type: 'doughnut',
         data: {
             labels: Object.keys(categories),
             datasets: [{
                 data: Object.values(categories),
-                backgroundColor: ['#cf222e', '#0969da', '#8250df', '#1a7f37', '#bf8700'],
+                backgroundColor: colors.doughnut,
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim(),
             }]
         },
         options: {
             maintainAspectRatio: false,
-            plugins: { legend: { position: 'right' } }
+            plugins: { legend: { position: 'right', labels: { color: colors.text } } }
         }
     });
 }
@@ -186,23 +229,6 @@ document.getElementById('configToggle').addEventListener('click', () => {
     arrow.classList.toggle('open', !isOpen);
 });
 
-/* 프롬프트 미리보기 */
-fetch(`${BASE_URL}/config`, { headers: authHeaders() })
-    .then(res => res.json())
-    .then(config => {
-        document.getElementById('promptStyle').value = config.prompt_style;
-        document.getElementById('maxTokens').value = config.max_tokens;
-        // style_instructions를 전역으로 저장
-        window.stylePreview = config.style_instructions;
-        updatePreview(config.prompt_style);
-    });
-
-/* 커스텀 선택 시 프롬프트 미리보기 숨기기 */
-document.getElementById('promptStyle').addEventListener('change', (e) => {
-    const wrapper = document.getElementById('customPromptWrapper');
-    const isCustom = e.target.value === 'custom';
-    wrapper.style.display = isCustom ? 'flex' : 'none';
-});
 
 /* 프롬프트 미리보기 자동 업데이트 */
 function updatePreview(style) {
@@ -222,11 +248,6 @@ document.getElementById('promptStyle').addEventListener('change', (e) => {
     updatePreview(e.target.value);
 });
 
-/* 커스텀 프롬프트 표시/숨김 */
-document.getElementById('promptStyle').addEventListener('change', (e) => {
-    const wrapper = document.getElementById('customPromptWrapper');
-    wrapper.style.display = e.target.value === 'custom' ? 'flex' : 'none';
-});
 
 /* 페이지 로드 시 현재 설정 불러오기 */
 fetch(`${BASE_URL}/config`, { headers: authHeaders() })
@@ -281,6 +302,27 @@ document.getElementById('saveConfig').addEventListener('click', () => {
     })
     .catch(err => console.error('설정 저장 실패:', err));
 });
+
+// 다크모드 <-> 라이트모드 전환
+themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
+    themeToggle.innerHTML = isDark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+    themeToggle.title = isDark ? '다크 모드로 전환' : '라이트 모드로 전환';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    
+    if (reviewChartInstance) reviewChartInstance.destroy();
+    if (categoryChartInstance) categoryChartInstance.destroy();
+    renderCharts(allReviews, lastCategories, lastRepoCounts);
+});
+
+// 페이지 로드 시 저장된 테마 복원
+const saved = localStorage.getItem('theme');
+if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    themeToggle.title = '라이트 모드로 전환';
+}
 
 /* 30초마다 자동 새로고침 */
 setInterval(() => loadDashboard(currentPage), 30000);

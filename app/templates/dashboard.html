@@ -6,9 +6,10 @@
     <title>GitReviewer 대시보드</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-    <!-- <link rel="stylesheet" href="/static/dashboard.css"> -->
+    <script src="https://kit.fontawesome.com/394d725530.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/dashboard.css">
     <!-- Railway 배포용 절대경로 스타일; 기존 캐시 무시 -->
-    <link rel="stylesheet" href="https://gitreviewer-production-c6da.up.railway.app/static/dashboard.css?v=2">
+    <!-- <link rel="stylesheet" href="https://gitreviewer-production-c6da.up.railway.app/static/dashboard.css?v=2"> -->
     <script>window.__CONFIG_TOKEN__ = "{{ config_token }}";</script>
 </head>
 <body>
@@ -16,12 +17,17 @@
     <header class="header">
         <div class="header-inner">
             <div class="logo">
-                <div class="logo-icon">GR</div>
+                <img src="/assets/gitreviewer_icon.png" width="40px">
                 <span class="logo-text">GitReviewer</span>
             </div>
             <nav class="header-nav">
-                <a href="https://github.com/Hyunyoung24/GitReviewer" target="_blank" class="nav-link">GitHub</a>
+                <a href="https://github.com/Hyunyoung24/GitReviewer" target="_blank" class="nav-link">
+                    <i class="fa-brands fa-github" style="font-size: 26px"></i>
+                </a>
                 <a href="https://github.com/Hyunyoung24/GitReviewer/blob/main/README.md" target="_blank" class="nav-btn">문서</a>
+                <button id="themeToggle" class="nav-theme" title="다크 모드로 전환">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
             </nav>
         </div>
     </header>
@@ -30,7 +36,10 @@
         <!-- 설정 패널 -->
         <div class="card config-panel">
             <div class="config-header" id="configToggle">
-                <h2 class="card-title">리뷰 설정</h2>
+                <h2 class="card-title">
+                    <i class="fa-solid fa-gears"></i>
+                    리뷰 설정
+                </h2>
                 <span class="config-arrow">▼</span>
             </div>
             <div class="config-body" id="configBody" style="display:none;">
@@ -68,22 +77,34 @@
         <!-- 통계 카드 -->
         <div class="stat-grid">
             <div class="stat-card">
-                <div class="stat-label">총 리뷰 수</div>
+                <div class="stat-label">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    총 리뷰 수
+                </div>
                 <div class="stat-value" id="totalReviews">-</div>
                 <div class="stat-sub">전체 기간</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">발견된 버그</div>
+                <div class="stat-label">
+                    <i class="fa-solid fa-bug"></i>
+                    발견된 버그
+                </div>
                 <div class="stat-value danger" id="totalBugs">-</div>
                 <div class="stat-sub">코멘트 기준</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">보안 이슈</div>
+                <div class="stat-label">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    보안 이슈
+                </div>
                 <div class="stat-value accent" id="totalSecurity">-</div>
                 <div class="stat-sub">코멘트 기준</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">연결된 저장소</div>
+                <div class="stat-label">
+                    <i class="fa-solid fa-folder-open"></i>
+                    연결된 저장소
+                </div>
                 <div class="stat-value" id="totalRepos">-</div>
                 <div class="stat-sub">전체 기간</div>
             </div>
@@ -91,18 +112,27 @@
         <!-- 차트 -->
         <div class="chart-row">
             <div class="card">
-                <h2 class="card-title">리뷰 현황</h2>
+                <h2 class="card-title">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    리뷰 현황
+                </h2>
                 <canvas id="reviewChart"></canvas>
             </div>
             <div class="card">
-                <h2 class="card-title">카테고리별 코멘트</h2>
+                <h2 class="card-title">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    카테고리별 코멘트
+                </h2>
                 <canvas id="categoryChart"></canvas>
             </div>
         </div>
         <!-- 리뷰 이력 테이블 -->
         <div class="table-card">
             <div class="table-header">
-                <h2 class="table-title">최근 리뷰 이력</h2>
+                <h2 class="table-title">
+                    <i class="fa-solid fa-comment-dots"></i>
+                    최근 리뷰 이력
+                </h2>
                 <div class="search-bar">
                     <select id="repoFilter">
                         <option value="">전체 저장소</option>
@@ -115,9 +145,9 @@
                     <tr>
                         <th>ID</th>
                         <th>저장소</th>
-                        <th>PR</th>
+                        <th class="header-pr">PR</th>
                         <th>제목</th>
-                        <th>상태</th>
+                        <th class="header-status">상태</th>
                         <th>날짜</th>
                     </tr>
                 </thead>
@@ -133,8 +163,8 @@
         </div>
     </div>
     <div id="toast" class="toast"></div>
-    <!-- <script src="/static/dashboard.js"></script> -->
+    <script src="/static/dashboard.js"></script>
     <!-- Railway 배포용 절대경로 스크립트; 기존 캐시 무시 -->
-    <script src="https://gitreviewer-production-c6da.up.railway.app/static/dashboard.js?v=2"></script> 
+    <!-- <script src="https://gitreviewer-production-c6da.up.railway.app/static/dashboard.js?v=2"></script>  -->
 </body>
 </html>

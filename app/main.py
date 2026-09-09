@@ -33,6 +33,7 @@ review_config = {
 app = FastAPI()
 app.include_router(dashboard_router)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 templates = Jinja2Templates(directory="app/templates")
 # Redis 연결 및 queue 초기화
 redis_conn = Redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
