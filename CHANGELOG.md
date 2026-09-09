@@ -4,6 +4,32 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/)를 따르며,
 [Semantic Versioning](https://semver.org/lang/ko/)을 준수합니다.
 
+## [0.8.2] - 2026-09-09
+### Added
+- 대시보드 다크/라이트 모드 전환 버튼 (달/해 아이콘, localStorage 저장)
+- 대시보드 차트 색상 모드별 전환 (바 차트, 도넛 차트, 축/범례 텍스트)
+- FontAwesome 아이콘 적용 (통계 카드, 섹션 제목, GitHub 링크)
+
+### Fixed
+- 대시보드 JS: 중복 `/config` fetch 호출 제거 (race condition으로 커스텀 프롬프트 미복원 문제)
+- 대시보드 JS: 중복 `promptStyle` change 이벤트 리스너 정리
+- 대시보드 JS: `.catch()` 범위 축소 — JS 런타임 에러 시 "서버가 실행 중이 아닙니다" 오표시 방지
+- 테이블 인라인 스타일을 CSS 클래스(`.td-muted`, `.td-sub`)로 교체하여 다크모드 대응
+
+### Changed
+- 대시보드 섹션 간 간격 통일 (`margin-bottom: 1rem`)
+
+## [0.8.1] - 2026-09-09
+### Added
+- GUI 대시보드 열기 버튼 추가
+- 서버 미실행 시 대시보드에 안내 메시지 표시
+
+### Fixed
+- CSS/JS 경로를 Railway 절대경로에서 상대경로(`/static/...`)로 변경
+- GUI 중복 윈도우 생성 방지
+- subprocess 호출 시 `CREATE_NO_WINDOW` 플래그 추가
+- exe 빌드 시 불필요한 frozen 체크 제거
+
 ## [0.8.0] - 2026-09-03
 ### Added
 - 로컬 실행용 GUI 구현
