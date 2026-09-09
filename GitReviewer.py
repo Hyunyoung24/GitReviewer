@@ -1,34 +1,52 @@
 import subprocess
 import sys
 import os
+import shutil
+
+def _get_python():
+    if getattr(sys, 'frozen', False):
+        return shutil.which("python") or shutil.which("python3") or "python"
+    return sys.executable
 
 def install_requirements():
     try:
         subprocess.check_call([_get_python(), "-m", "pip", "install", "-r", "requirements.txt"],
-                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                              creationflags=subprocess.CREATE_NO_WINDOW)
     except:
         pass
 
-install_requirements()
 
 import tkinter as tk
+
+# 스플래시
+splash = tk.Tk()
+splash.overrideredirect(True)
+splash.geometry("300x120+500+300")
+splash.configure(bg="#EBEBEB")
+tk.Label(splash, text="GitReviewer", font=("맑은 고딕", 16, "bold"),
+         fg="black", bg="#EBEBEB").pack(pady=(20, 5))
+splash_label = tk.Label(splash, text="패키지 확인 중...", font=("맑은 고딕", 10), fg="#000000", bg="#EBEBEB")
+splash_label.pack()
+splash.update()
+
+install_requirements()
+
+splash_label.config(text="모듈 로딩 중...")
+splash.update()
+
 import tkinter.font as tkfont
 import customtkinter as ctk
 import threading
 import requests
 import time
 import ctypes
-import shutil
+import webbrowser
 
 if getattr(sys, 'frozen', False):
     BASE_DIR = sys._MEIPASS
 else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-def _get_python():
-    if getattr(sys, 'frozen', False):
-        return shutil.which("python") or shutil.which("python3") or "python"
-    return sys.executable
 
 from PIL import Image, ImageTk
 from customtkinter import CTkImage
@@ -126,23 +144,40 @@ class GitReviewerGUI:
             font=("맑은 고딕", 12), text_color="gray").pack()
 
         # 아이콘 로드
-        img_normal = self._tint_icon(os.path.join(BASE_DIR, "assets", "settings.png"), color=(128, 128, 128))
-        img_rotated = self._tint_icon(os.path.join(BASE_DIR, "assets", "settings.png"), color=(128, 128, 128))
-        img_rotated = img_rotated.rotate(22.5, expand=False)
+        dashboard = self._tint_icon(os.path.join(BASE_DIR, "assets", "dashboard.png"), color=(9, 105, 218))
+        dashboard_hover = self._tint_icon(os.path.join(BASE_DIR, "assets", "dashboard.png"), color=(52, 143, 250))
+        dashboard_dark = self._tint_icon(os.path.join(BASE_DIR, "assets", "dashboard.png"), color=(232, 93, 4))
+        dashboard_dark_hover = self._tint_icon(os.path.join(BASE_DIR, "assets", "dashboard.png"), color=(255, 146, 77))
+        settings_normal = self._tint_icon(os.path.join(BASE_DIR, "assets", "settings.png"), color=(128, 128, 128))
+        settings_rotated = self._tint_icon(os.path.join(BASE_DIR, "assets", "settings.png"), color=(128, 128, 128))
+        settings_rotated = settings_rotated.rotate(22.5, expand=False)
 
-        icon = CTkImage(light_image=img_normal, size=(20, 20))
-        icon_rotated = CTkImage(light_image=img_rotated, size=(20, 20))
+        self.dashboard_icon = CTkImage(light_image=dashboard, size=(24, 24))
+        self.dashboard_icon_hover = CTkImage(light_image=dashboard_hover, size=(24, 24))
+        self.dashboard_icon_dark = CTkImage(light_image=dashboard_dark, size=(24, 24))
+        self.dashboard_icon_dark_hover = CTkImage(light_image=dashboard_dark_hover, size=(24, 24))
+        settings_icon = CTkImage(light_image=settings_normal, size=(20, 20))
+        settings_icon_rotated = CTkImage(light_image=settings_rotated, size=(20, 20))
+
+        self.dashboard_btn = ctk.CTkButton(
+            self.root, text="", image=self.dashboard_icon, width=24, height=24,
+            fg_color="transparent",
+            hover_color=("#EBEBEB", "#242424"),
+            command=self._open_dashboard
+        )
+        self.dashboard_btn.place(x=5, y=6)
+        self.dashboard_btn.bind("<Enter>", lambda e: self.dashboard_btn.configure(image=self.dashboard_icon_hover))
+        self.dashboard_btn.bind("<Leave>", lambda e: self.dashboard_btn.configure(image=self.dashboard_icon))
 
         settings_btn = ctk.CTkButton(
-            self.root, text="", image=icon, width=24, height=24,
+            self.root, text="", image=settings_icon, width=24, height=24,
             fg_color="transparent",
             hover_color=("#EBEBEB", "#242424"),
             command=self._open_settings
         )
         settings_btn.place(x=200, y=8)
-        settings_btn.bind("<Enter>", lambda e: settings_btn.configure(image=icon_rotated))
-        settings_btn.bind("<Leave>", lambda e: settings_btn.configure(image=icon))
-    
+        settings_btn.bind("<Enter>", lambda e: settings_btn.configure(image=settings_icon_rotated))
+        settings_btn.bind("<Leave>", lambda e: settings_btn.configure(image=settings_icon))
 
         # 모드 토글
         self.mode_var = ctk.StringVar(value="dark")
@@ -200,6 +235,9 @@ class GitReviewerGUI:
                                     fg_color="#0969da", hover_color="#0860ca",
                                     command=self._toggle)
         self.show_btn.grid(row=0, column=0, sticky="ew")
+
+    def _open_dashboard(self):
+        webbrowser.open("http://127.0.0.1:8000/dashboard_page")
 
     def _open_settings(self):
         if hasattr(self, '_settings_win') and self._settings_win.winfo_exists():
@@ -308,6 +346,20 @@ class GitReviewerGUI:
             except:
                 pass
 
+        if hasattr(self, 'dashboard_btn'):
+            try:
+                if self.dashboard_btn.winfo_exists():
+                    if value == "라이트":
+                        self.dashboard_btn.configure(image=self.dashboard_icon)
+                        self.dashboard_btn.bind("<Enter>", lambda e: self.dashboard_btn.configure(image=self.dashboard_icon_hover))
+                        self.dashboard_btn.bind("<Leave>", lambda e: self.dashboard_btn.configure(image=self.dashboard_icon))
+                    else:
+                        self.dashboard_btn.configure(image=self.dashboard_icon_dark)
+                        self.dashboard_btn.bind("<Enter>", lambda e: self.dashboard_btn.configure(image=self.dashboard_icon_dark_hover))
+                        self.dashboard_btn.bind("<Leave>", lambda e: self.dashboard_btn.configure(image=self.dashboard_icon_dark))
+            except: 
+                pass
+
     def _toggle(self):
         if not self.processes:
             # 시작
@@ -400,6 +452,7 @@ class GitReviewerGUI:
         self.url_var.set("ngrok URL 대기 중...")
 
 if __name__ == "__main__":
+    splash.destroy()
     root = ctk.CTk()
     app = GitReviewerGUI(root)
     root.mainloop()
