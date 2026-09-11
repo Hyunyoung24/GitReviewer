@@ -91,8 +91,8 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
 ## 사용법
 ### 사전 준비
 - [ngrok](https://ngrok.com) 설치 및 계정 연동
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) 다운로드
-- (GUI 사용시 선택사항) WSL, Redis 설치
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) 다운로드 (Redis 6.0 이상 필요)
+- (GUI 사용시 선택사항 & 비권장) WSL, Redis 설치
 ```bash
 wsl --install -d Ubuntu
 sudo apt-get install redis-server
@@ -108,12 +108,12 @@ sudo service redis-server start
 6. Add webhook 클릭
 
 ### 실행
-#### GUI / .exe (권장 1)
+#### GUI (권장)
 ```bash
-# 1. 최신 GitReviewer.exe 다운로드
-[Releases](https://github.com/Hyunyoung24/GitReviewer/releases)
+# 1. GitReviewer.py 실행
+python GitReviewer.py
 
-# 2. GitReviewer.exe 실행, 설정 후 저장
+# 2. 설정 후 저장
 Anthropic API 키: 클로드 API 키
 GitHub 개인 접근용 토큰: 해당 리포지토리 접근 가능한 토큰
 GitHub 리포지토리용 웹훅 시크릿: 웹훅 Secret 값
@@ -122,25 +122,6 @@ API 요청 헤더용 토큰 (비밀번호): 자신만 아는 임의의 문자열
 # 3. 실행 버튼 클릭
 
 # 4. 대시보드 실행
-http://127.0.0.1:8000/dashboard_page
-```
-
-#### GUI / .py (권장 2)
-```bash
-# 1. 리포지토리 다운로드
-
-# 2. GitReviewer.py 실행
-python GitReviewer.py
-
-# 3. 설정 후 저장
-Anthropic API 키: 클로드 API 키
-GitHub 개인 접근용 토큰: 해당 리포지토리 접근 가능한 토큰
-GitHub 리포지토리용 웹훅 시크릿: 웹훅 Secret 값
-API 요청 헤더용 토큰 (비밀번호): 자신만 아는 임의의 문자열, 특수문자 사용 X
-
-# 4. 실행 버튼 클릭
-
-# 5. 대시보드 실행
 http://127.0.0.1:8000/dashboard_page
 ```
 
@@ -203,4 +184,3 @@ http://127.0.0.1:8000/dashboard_page
 - **파일별 분리 리뷰**: 대용량 PR에서 파일 단위로 Claude를 따로 호출해 정확도 향상
 - ~~**PostgreSQL 전환**: 배포 환경에서 SQLite → PostgreSQL로 전환~~
 - **(선택) GitHub App 전환**: 현재는 저장소별 수동 웹훅 등록 방식이지만, GitHub App으로 전환하면 누구나 설치해서 쓸 수 있는 서비스로 확장 가능
-- **(선택) Java로 재구축**: Spring Boot 기반으로 재구축해서 Java/Spring 생태계 경험 확장
